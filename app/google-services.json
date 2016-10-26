@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "256347398226",
+    "firebase_url": "https://fir-mykids.firebaseio.com",
+    "project_id": "firebase-mykids",
+    "storage_bucket": "firebase-mykids.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256347398226:android:bfc68f2b3f3a098f",
+        "android_client_info": {
+          "package_name": "com.workshop2.mykids"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256347398226-m6g461oq3g81dn2t4m3r1vusoe1a1llo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.workshop2.mykids",
+            "certificate_hash": "0DEBB32046F74BE3977785184BA237290FD8BB5F"
+          }
+        },
+        {
+          "client_id": "256347398226-eqdfmtun7pcrhjjone0ghgoa1eb1hkoj.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "256347398226-a2pf641a2tcfnjl823fi7kod87i7le75.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoEnttmoC4HPKS2FEhnUH120rmfstvlMU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256347398226-eqdfmtun7pcrhjjone0ghgoa1eb1hkoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
