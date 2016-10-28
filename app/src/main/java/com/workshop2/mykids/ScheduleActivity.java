@@ -41,11 +41,14 @@ public class ScheduleActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_schedule);
 
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Schedule");
+        getSupportActionBar().setTitle("");
+        binding.collapsingToolbar.setTitleEnabled(false);
 
         Intent intent = getIntent();
         scheduleList = (ArrayList<Schedule>) intent.getSerializableExtra("schedule");
+
+        binding.tvName.setText(intent.getStringExtra("kname"));
+        binding.tvDate.setText(intent.getStringExtra("kdate"));
 
         Glide.with(this)
                 .load(intent.getStringExtra("kimage"))

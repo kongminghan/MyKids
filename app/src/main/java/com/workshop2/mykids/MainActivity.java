@@ -277,13 +277,16 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
 
     @Override
     public void disableCollapse() {
-        imageView.setVisibility(View.GONE);
+//        imageView.setVisibility(View.GONE);
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.vaccine_));
         collapsingToolbarLayout.setTitleEnabled(false);
+        toolbar.setTitle("");
     }
 
     @Override
     public void enableCollapse() {
-        imageView.setVisibility(View.VISIBLE);
+//        imageView.setVisibility(View.VISIBLE);
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.kid));
         collapsingToolbarLayout.setTitleEnabled(true);
     }
 

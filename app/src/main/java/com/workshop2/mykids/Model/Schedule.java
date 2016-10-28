@@ -8,6 +8,18 @@ import java.io.Serializable;
 
 public class Schedule implements Serializable{
     String s_name, s_date, s_id, s_time;
+    int type;
+
+    public static final int CALENDER_TYPE = 0;
+    public static final int  EVENT_TYPE = 1;
+
+    public Schedule(String s_name, String s_date, String s_id, String s_time, int type) {
+        this.s_name = s_name;
+        this.s_date = s_date;
+        this.s_id = s_id;
+        this.s_time = s_time;
+        this.type = type;
+    }
 
     public Schedule(String s_name, String s_date, String s_id, String s_time) {
         this.s_name = s_name;
@@ -17,6 +29,11 @@ public class Schedule implements Serializable{
     }
 
     public Schedule(){}
+
+    public Schedule(String s_date, int type){
+        this.type = type;
+        this.s_date=s_date;
+    }
 
     public String getS_date() {
         return s_date;
@@ -44,10 +61,17 @@ public class Schedule implements Serializable{
 
     public String getS_name() {
         return s_name;
-
     }
 
     public void setS_name(String s_name) {
         this.s_name = s_name;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
