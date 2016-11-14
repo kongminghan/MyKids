@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.firebase.client.Firebase;
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
         selectNavMenu();
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
             drawer.closeDrawers();
-//            toggleFab();
+            toggleFab();
             return;
         }
 
@@ -176,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
         }
 
         // show or hide the fab button
-//        toggleFab();
+        toggleFab();
 
         //Closing drawer on item click
         drawer.closeDrawers();
@@ -256,23 +259,45 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
         actionBarDrawerToggle.syncState();
     }
 
-        @Override
+    @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawers();
             return;
         }
+        else{
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this)
+                .title("Are you sure")
+                .content("You are leaving MyKids App right now. Make sure do check your kid's schedule frequently. ")
+                .positiveText("Yes")
+                .negativeText("No")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        finish();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        return;
+                    }
+                });
 
-        if (shouldLoadHomeFragOnBackPress) {
-            if (navItemIndex != 0) {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_KID;
-                loadHomeFragment();
-                return;
-            }
+        MaterialDialog dialog = builder.build();
+        dialog.show();
         }
-        syncFrags();
+
+//        if (shouldLoadHomeFragOnBackPress) {
+//            if (navItemIndex != 0) {
+//                navItemIndex = 0;
+//                CURRENT_TAG = TAG_KID;
+//                loadHomeFragment();
+//                return;
+//            }
+//        }
+//        syncFrags();
     }
 
     @Override
@@ -280,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
 //        imageView.setVisibility(View.GONE);
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.vaccine_));
         collapsingToolbarLayout.setTitleEnabled(false);
-        toolbar.setTitle("");
+//        toolbar.setTitle("");
     }
 
     @Override
@@ -288,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
 //        imageView.setVisibility(View.VISIBLE);
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.kid));
         collapsingToolbarLayout.setTitleEnabled(true);
+        collapsingToolbarLayout.setTitle("MyKids");
     }
 
     private void savetoPref(){

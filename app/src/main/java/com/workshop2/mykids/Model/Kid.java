@@ -16,8 +16,18 @@ public class Kid implements Serializable{
     private String kid_date;
     private String kid_image;
     private String kid_gender;
-    private String kid_image_name;
+    private String kid_state;
+
+    public String getKid_state() {
+        return kid_state;
+    }
+
+    public void setKid_state(String kid_state) {
+        this.kid_state = kid_state;
+    }
+
     private ArrayList<Schedule> schedule;
+
 
     public ArrayList<Schedule> getSchedule() {
         return schedule;
@@ -27,21 +37,14 @@ public class Kid implements Serializable{
         this.schedule = schedule;
     }
 
-    public String getKid_image_name() {
-        return kid_image_name;
-    }
-
-    public void setKid_image_name(String kid_image_name) {
-        this.kid_image_name = kid_image_name;
-    }
-
-    public Kid(String kid_name, String kid_date, String kid_image, String kid_id, String kid_gender, int kid_age){
+    public Kid(String kid_name, String kid_date, String kid_image, String kid_id, String kid_gender, int kid_age, String state){
         this.kid_name = kid_name;
         this.kid_date = kid_date;
         this.kid_image = kid_image;
         this.kid_id = kid_id;
         this.kid_gender = kid_gender;
         this.kid_age = kid_age;
+        this.kid_state = state;
     }
 
     public Kid(){}

@@ -1,0 +1,32 @@
+<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pew="http://schemas.android.com/apk/res-auto">
+
+    <com.fmsirvent.ParallaxEverywhere.PEWImageView
+        android:layout_width="match_parent"
+        android:id="@+id/monthImage"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:layout_height="186dp"
+        pew:block_parallax_x="true"
+        pew:reverse="reverseY"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/tvMonthYear"
+        android:gravity="left"
+        android:layout_alignTop="@id/monthImage"
+        android:layout_alignBottom="@id/monthImage"
+        android:layout_alignLeft="@id/monthImage"
+        android:layout_alignRight="@id/monthImage"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        android:textStyle="normal|bold"
+        android:layout_margin="45dp"
+        android:textSize="24sp"
+        android:padding="6dp" />
+
+</RelativeLayout>

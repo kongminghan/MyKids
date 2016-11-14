@@ -14,6 +14,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +112,7 @@ public class KidFragment extends Fragment {
             recyclerView.setAdapter(kidAdapter);
 
         }
+        setupWindowAnimations();
         return view;
     }
 
@@ -168,15 +173,15 @@ public class KidFragment extends Fragment {
     }
 
     public ArrayList<Kid> loadKids(FirebaseUser user){
-//        Firebase.setAndroidContext(getContext());
         Firebase.setAndroidContext(getContext());
         mRef = new Firebase("https://fir-mykids.firebaseio.com/");
         kidList = new ArrayList<Kid>();
         Firebase userRef = mRef.child("User").child(user.getUid()).child("kid");
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("There are "+ dataSnapshot.getChildrenCount());
+//                System.out.println("There are "+ dataSnapshot.getChildrenCount());
+                kidList.clear();
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                     Kid kid = postSnapshot.getValue(Kid.class);
                     kidList.add(kid);
@@ -234,5 +239,13 @@ public class KidFragment extends Fragment {
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    private void setupWindowAnimations() {
+        Transition exitTrans = new Explode();
+        getActivity().getWindow().setExitTransition(exitTrans);
+
+        Transition reenterTrans = new Slide();
+        getActivity().getWindow().setReenterTransition(reenterTrans);
     }
 }

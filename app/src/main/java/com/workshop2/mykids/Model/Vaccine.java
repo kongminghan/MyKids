@@ -7,69 +7,65 @@ import android.content.Context;
  */
 
 public class Vaccine {
-    private String v_id;
-    private String v_name;
-    private String v_dosage;
-    private String v_image;
-    private String v_desc;
-    private String v_expdate;
+  String vaccine_dis, vaccine_func, vaccine_id, vaccine_image, vaccine_name, vaccine_sym;
 
-    public Vaccine(String v_id, String v_name, String v_dosage, String v_image, String v_desc, String v_expdate){
-        this.v_id = v_id;
-        this.v_name = v_name;
-        this.v_dosage = v_dosage;
-        this.v_image = v_image;
-        this.v_desc = v_desc;
-        this.v_expdate = v_expdate;
-    }
-    public String getV_id() {
-        return v_id;
+    public String getVaccine_dis() {
+        return vaccine_dis;
     }
 
-    public void setV_id(String v_id) {
-        this.v_id = v_id;
+    public void setVaccine_dis(String vaccine_dis) {
+        this.vaccine_dis = vaccine_dis;
     }
 
-    public String getV_name() {
-        return v_name;
+    public String getVaccine_func() {
+        return vaccine_func;
     }
 
-    public void setV_name(String v_name) {
-        this.v_name = v_name;
+    public void setVaccine_func(String vaccine_func) {
+        this.vaccine_func = vaccine_func;
     }
 
-    public String getV_dosage() {
-        return v_dosage;
+    public String getVaccine_id() {
+        return vaccine_id;
     }
 
-    public void setV_dosage(String v_dosage) {
-        this.v_dosage = v_dosage;
+    public void setVaccine_id(String vaccine_id) {
+        this.vaccine_id = vaccine_id;
     }
 
-    public String getV_image() {
-        return v_image;
+    public String getVaccine_image() {
+        return vaccine_image;
     }
 
-    public void setV_image(String v_image) {
-        this.v_image = v_image;
+    public void setVaccine_image(String vaccine_image) {
+        this.vaccine_image = vaccine_image;
     }
 
-    public String getV_desc() {
-        return v_desc;
+    public String getVaccine_name() {
+        return vaccine_name;
     }
 
-    public void setV_desc(String v_desc) {
-        this.v_desc = v_desc;
+    public void setVaccine_name(String vaccine_name) {
+        this.vaccine_name = vaccine_name;
     }
 
-    public String getExpdate() {
-        return v_expdate;
+    public String getVaccine_sym() {
+        return vaccine_sym;
     }
 
-    public void setV_expdate(String v_expdate) {
-        this.v_expdate = v_expdate;
+    public void setVaccine_sym(String vaccine_sym) {
+        this.vaccine_sym = vaccine_sym;
     }
-    public int getImageResourceId(Context context) {
-        return context.getResources().getIdentifier(this.v_image, "drawable", context.getPackageName());
+
+    public Vaccine(){
+
+    }
+
+    public Vaccine(String vaccine_dis, String vaccine_func, String vaccine_id, String vaccine_image, String vaccine_name, String vaccine_sym){
+        this.vaccine_dis = vaccine_dis;
+        this.vaccine_func = vaccine_func;
+        this.vaccine_id = vaccine_id;
+        this.vaccine_image = vaccine_image;
+        this.vaccine_sym = vaccine_sym;
     }
 }

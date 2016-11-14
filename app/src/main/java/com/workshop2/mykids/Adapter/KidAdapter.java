@@ -5,12 +5,9 @@ package com.workshop2.mykids.Adapter;
  */
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,9 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +27,9 @@ import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.workshop2.mykids.KidDetailActivity;
 import com.workshop2.mykids.Model.Kid;
-import com.workshop2.mykids.Model.Schedule;
 import com.workshop2.mykids.R;
 import com.workshop2.mykids.ScheduleActivity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -51,6 +46,7 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
         public TextView title, count, card_kid, card_gender;
         public ImageView thumbnail, overflow;
         public Button editButton;
+        public LinearLayout kid_cardHolder;
         private View v;
 
         public MyViewHolder(View view) {
@@ -63,6 +59,7 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             overflow = (ImageView) view.findViewById(R.id.overflow);
             card_gender = (TextView)view.findViewById(R.id.card_gender);
+            kid_cardHolder = (LinearLayout)view.findViewById(R.id.kid_cardHolder);
         }
 
 //        @Override
@@ -82,7 +79,7 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.child_card, parent, false);
+                .inflate(R.layout.card_child, parent, false);
 
         return new MyViewHolder(itemView);
     }
@@ -111,14 +108,15 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
                 intent.putExtra("kdate", kids.get(position).getKid_date());
                 intent.putExtra("kgender", kids.get(position).getKid_gender());
                 intent.putExtra("kid", kids.get(position).getKid_id());
-//                intent.putExtra("kid", (Serializable) kids.get(position));
-//                Bundle extra = new Bundle();
-//                extra.putSerializable("schedule", kids.get(position).getSchedule());
-                intent.putExtra("schedule", kids.get(position).getSchedule());
-//                intent.putExtra("extra", extra);
 
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity)mContext, holder.thumbnail, v.getTransitionName());
+                //pass arraylist
+                //make sure Object class implement Serializable
+//                intent.putExtra("schedule", kids.get(position).getSchedule());
+
+//                ActivityOptionsCompat options = ActivityOptionsCompat.
+//                        makeSceneTransitionAnimation((Activity)mContext, holder.kid_cardHolder, "kidHolder");
+//                context.startActivity(intent, options.toBundle());
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext);
                 context.startActivity(intent, options.toBundle());
 //                mContext.startActivity(intent);
             }
@@ -158,11 +156,12 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
                     intent.putExtra("kdate", kids.get(itemPos).getKid_date());
                     intent.putExtra("kgender", kids.get(itemPos).getKid_gender());
                     intent.putExtra("kid", kids.get(itemPos).getKid_id());
+                    intent.putExtra("kstate", kids.get(itemPos).getKid_state());
                     mContext.startActivity(intent);
                     return true;
 
                 case R.id.delete:
-                    System.out.println("Delete item "+itemPos+kids.get(itemPos).getKid_name());
+                    System.out.println("Delete item "+itemPos+" "+kids.get(itemPos).getKid_name());
                     deleteKid(kids.get(itemPos).getKid_id());
                     kids.remove(itemPos);
                     notifyDataSetChanged();

@@ -48,4 +48,10 @@
     <color name="colorPrimaryDarkKid">#0097A7</color>
     <color name="colorAccentKid">#03A9F4</color>
     <color name="schedule">#009688</color>
+    <color name="schedule_card">#00796b</color>
+    <color name="schedule_checked">#2196F3</color>
+    <color name="schedule_checked_dark">#1E88E5</color>
+    <color name="toolbar">#9E9E9E</color>
+    <color name="schedule_text">#78909c</color>
+    <color name="teal200">#B2DFDB</color>
 </resources>

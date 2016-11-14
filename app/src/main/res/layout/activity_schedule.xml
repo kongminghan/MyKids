@@ -6,73 +6,21 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:theme="@style/ToolbarTheme">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/appBar"
-            android:fitsSystemWindows="true"
-            android:theme="@style/AppThemeKidDetail">
+            android:theme="@style/ToolbarTheme">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:fitsSystemWindows="true"
-                app:layout_scrollFlags="scroll"
-                android:padding="40dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:layout_marginTop="20dp">
-
-                    <ImageView
-                        android:id="@+id/profileImage"
-                        android:layout_gravity="left"
-                        android:layout_margin="16dp"
-                        android:layout_width="75dp"
-                        android:layout_height="75dp"
-                        android:transitionName="kid_thumbnail"/>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_margin="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvName"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:textAppearance="@android:style/TextAppearance.Material.Large"
-                            android:textColor="@color/common_google_signin_btn_text_dark_focused" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/tvDate"
-                            android:layout_marginStart="16dp"
-                            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-                            android:textColor="@color/mdtp_accent_color" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:theme="@style/ToolbarColoredClose"
-                    app:popupTheme="@style/AppThemeKidDetail" />
-
-            </android.support.design.widget.CollapsingToolbarLayout>
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                android:theme="@style/ToolbarTheme" />
 
         </android.support.design.widget.AppBarLayout>
 

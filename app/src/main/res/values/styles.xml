@@ -75,14 +75,26 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
         <!-- Toolbar Theme / Apply white arrow -->
-        <item name="colorControlNormal">@android:color/white</item>
-        <item name="actionBarTheme">@style/AppTheme.ActionBarTheme</item>
+        <item name="colorControlNormal">@color/toolbar</item>
+        <item name="actionBarTheme">@style/ToolbarColoredClose</item>
 
     </style>
 
     <style name="ToolbarColoredClose" parent="AppThemeKidDetail">
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/schedule</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
 
 </resources>

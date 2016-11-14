@@ -1,13 +1,25 @@
 package com.workshop2.mykids;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.workshop2.mykids.Adapter.VaccineAdapter;
+import com.workshop2.mykids.Model.Kid;
+import com.workshop2.mykids.Model.Vaccine;
+
+import java.util.ArrayList;
 
 public class VaccineFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -20,6 +32,9 @@ public class VaccineFragment extends Fragment {
     private String mParam2;
 
     private OnVaccineFragmentListener mListener;
+    private RecyclerView recyclerView;
+    private ArrayList<Vaccine> vaccines;
+    private VaccineAdapter vaccineAdapter;
 
     public VaccineFragment() {
         // Required empty public constructor
@@ -56,7 +71,15 @@ public class VaccineFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_vaccine, container, false);
+        View view  =  inflater.inflate(R.layout.fragment_vaccine, container, false);
+        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+        vaccines = getVaccines();
+        vaccineAdapter = new VaccineAdapter(getContext(), vaccines);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(vaccineAdapter);
+        return view;
     }
 
     @Override
@@ -90,5 +113,30 @@ public class VaccineFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().setTitle("Vaccine");
+    }
+
+    private ArrayList<Vaccine> getVaccines(){
+        ArrayList<Vaccine> v = new ArrayList<>();
+        Firebase firebase = new Firebase("https://fir-mykids.firebaseio.com/")
+                .child("vaccine");
+        firebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                vaccines.clear();
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    Vaccine vaccine = postSnapshot.getValue(Vaccine.class);
+                    vaccines.add(vaccine);
+                }
+                vaccineAdapter.notifyDataSetChanged();
+                System.out.println("NOTIFY DATA SET CHANGED");
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        return v;
     }
 }

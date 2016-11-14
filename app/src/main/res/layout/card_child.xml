@@ -17,8 +17,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/imageHolder"
-            android:transitionName="thumbnail_holder">
+            android:id="@+id/imageHolder">
 
             <ImageView
                 android:id="@+id/thumbnail"
