@@ -1,4 +1,4 @@
-package com.workshop2.mykids.Other;
+package com.workshop2.mykids.other;
 
 /**
  * Created by MingHan on 30/9/2016.

@@ -1,15 +1,11 @@
 package com.workshop2.mykids;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,21 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.Explode;
 import android.transition.Slide;
 import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.workshop2.mykids.Adapter.KidAdapter;
-import com.workshop2.mykids.Model.Kid;
+import com.workshop2.mykids.adapter.KidAdapter;
+import com.workshop2.mykids.model.Kid;
+import com.workshop2.mykids.task.KidAsyncTask;
 
 import java.util.ArrayList;
 
@@ -54,8 +45,7 @@ public class KidFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private OnKidFragmentListener mListener;
-    private Firebase mRef;
-    private RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
     private ArrayList<Kid> kidList;
     private KidAdapter kidAdapter;
 
@@ -96,22 +86,18 @@ public class KidFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_kid, container, false);
         ((MainActivity) getActivity()).getCollapsingToolbar().setTitle("MyKids");
-
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
-//        kidList = new ArrayList<Kid>();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if(user != null){
-
-            kidList = loadKids(user);
-            kidAdapter = new KidAdapter(getActivity(), kidList);
-
+            kidAdapter = new KidAdapter(getContext(), kidList);
+            recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(kidAdapter);
-
+//            recyclerView.setAdapter(kidAdapter);
         }
+
         setupWindowAnimations();
         return view;
     }
@@ -119,6 +105,7 @@ public class KidFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        new KidAsyncTask(getContext(), kidAdapter, recyclerView).execute();
         mListener.enableCollapse();
     }
 
@@ -169,34 +156,33 @@ public class KidFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).getCollapsingToolbar().setTitle("MyKids");
+        getActivity().setTitle("MyKids");
     }
 
-    public ArrayList<Kid> loadKids(FirebaseUser user){
-        Firebase.setAndroidContext(getContext());
-        mRef = new Firebase("https://fir-mykids.firebaseio.com/");
-        kidList = new ArrayList<Kid>();
-        Firebase userRef = mRef.child("User").child(user.getUid()).child("kid");
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-//                System.out.println("There are "+ dataSnapshot.getChildrenCount());
-                kidList.clear();
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    Kid kid = postSnapshot.getValue(Kid.class);
-                    kidList.add(kid);
-                }
-                kidAdapter.notifyDataSetChanged();
-                System.out.println("NOTIFY DATA SET CHANGED");
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-        return kidList;
-    }
+//    public ArrayList<Kid> loadKids(FirebaseUser user){
+//        Firebase.setAndroidContext(getContext());
+//        mRef = new Firebase("https://fir-mykids.firebaseio.com/");
+//        kidList = new ArrayList<Kid>();
+//        Firebase userRef = mRef.child("User").child(user.getUid()).child("kid");
+//        userRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                kidList.clear();
+//                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+//                    Kid kid = postSnapshot.getValue(Kid.class);
+//                    kidList.add(kid);
+//                }
+//                kidAdapter.notifyDataSetChanged();
+//                System.out.println("NOTIFY DATA SET CHANGED");
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//                System.out.println("The read failed: " + firebaseError.getMessage());
+//            }
+//        });
+//        return kidList;
+//    }
 
     /**
      * RecyclerView item decoration - give equal margin around grid item

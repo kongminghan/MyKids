@@ -1,4 +1,4 @@
-package com.workshop2.mykids.Model;
+package com.workshop2.mykids.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -10,6 +10,10 @@
             android:id="@+id/nav_vaccine"
             android:icon="@drawable/syringe"
             android:title="Vaccine"/>
+        <item
+            android:id="@+id/nav_coming"
+            android:icon="@drawable/ic_list_black_24dp"
+            android:title="Coming vaccination"/>
     </group>
 
     <item android:title="Other">

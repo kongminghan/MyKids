@@ -10,10 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,7 +24,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.workshop2.mykids.Other.PrefManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.workshop2.mykids.other.PrefManager;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "LOGIN_ACTIVITY";
@@ -38,13 +36,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private Firebase mRef;
+    private DatabaseReference mRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Firebase.setAndroidContext(this);
         prefManager = new PrefManager(this);
         mAuth = FirebaseAuth.getInstance();
 
@@ -78,9 +75,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     intent.putExtra("displayName", name);
                     intent.putExtra("photoURL", photoURL);
                     startActivity(intent);
-
-                } else {
-                    // User is signed out
                 }
             }
         };

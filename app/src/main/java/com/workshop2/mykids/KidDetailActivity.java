@@ -1,21 +1,17 @@
 package com.workshop2.mykids;
 
-import android.*;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -27,40 +23,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.jaredrummler.materialspinner.MaterialSpinner;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.workshop2.mykids.Model.Kid;
-import com.workshop2.mykids.Other.CircleTransform;
+import com.workshop2.mykids.model.Kid;
+import com.workshop2.mykids.other.CircleTransform;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import gun0912.tedbottompicker.TedBottomPicker;
 
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
-
-public class KidDetailActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class KidDetailActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, Validator.ValidationListener{
     public static final String EXTRA_PARAM_ID = "kid_id";
     private static final int SELECT_PICTURE = 1;
     private ImageView imageView;
@@ -70,28 +69,40 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
     private Toolbar toolbar;
     private MaterialSpinner spinner, spinner_city;
     private String gender = "Male", state = "Perlis",imageName,selectedImagePath, kid;
-    private EditText birthDate, etName;
-    private Firebase mRef;
+    @NotEmpty
+    private EditText birthDate;
+    @NotEmpty
+    private EditText etName;
+    private EditText etState;
+    private TextInputLayout tilName, tilDate;
+    private Validator validator;
+    private DatabaseReference mRef;
     private ProgressDialog progressDialog;
     private Uri file;
     private Bitmap bp;
     private Button save;
     private Boolean newPhoto=false;
     private byte[] data_img;
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kid_detail);
 
+        validator = new Validator(this);
+        validator.setValidationListener(this);
+        tilName = (TextInputLayout)findViewById(R.id.tilName);
+        tilDate = (TextInputLayout)findViewById(R.id.tilDate);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Kid Detail");
+        getSupportActionBar().setTitle("");
 
         imageView = (ImageView)findViewById(R.id.profileImage);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         String kimage = intent.getStringExtra("kimage");
         String kname = intent.getStringExtra("kname");
         String kdate = intent.getStringExtra("kdate");
@@ -102,14 +113,15 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
         Glide.with(this)
                 .load(kimage)
                 .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(ALL)
                 .into(imageView);
 
-        setupSpinner(kstate);
+        setupSpinner(kstate, kgender);
         setupPhoto();
 
         birthDate = (EditText)findViewById(R.id.birthDate);
         etName = (EditText)findViewById(R.id.etName);
+        etState = (EditText)findViewById(R.id.etState);
+
         birthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,18 +138,27 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
 
         birthDate.setText(kdate);
         etName.setText(kname);
+        etState.setText(kstate);
+        etState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(KidDetailActivity.this)
+                        .title("State")
+                        .items(R.array.state)
+                        .itemsCallbackSingleChoice(index, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                state = String.valueOf(text);
+                                etState.setText(text);
+                                return true;
+                            }
+                        })
+                        .positiveText("Choose")
+                        .show();
+            }
+        });
 
-        if(kgender.equals("Male")){
-            gender = "Male";
-            spinner.setSelectedIndex(0);
-        }
-        else{
-            gender = "Female";
-            spinner.setSelectedIndex(1);
-        }
-
-        mRef = new Firebase("https://fir-mykids.firebaseio.com/");
-        save = (Button)findViewById(R.id.kdSave);
+        save = (Button)findViewById(R.id.btnSave);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,19 +166,7 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage("Loading...");
                 progressDialog.show();
-                if(newPhoto){
-                    newPhoto = false;
-                    uploadImage();
-                }
-                else{
-                    Kid kid = new Kid();
-                    kid.setKid_name(etName.getText().toString());
-                    kid.setKid_date(birthDate.getText().toString());
-                    kid.setKid_gender(gender);
-                    kid.setKid_state(state);
-                    Map<String, Object> kidUpdate = kid.toMap();
-                    updateKid(kidUpdate);
-                }
+                validator.validate();
             }
         });
     }
@@ -297,15 +306,44 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
 //        return uri.getPath();
 //    }
 
-    private void updateKid(Map<String, Object> kidUpdate){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user.getUid() != null) {
-            Firebase userRef = mRef.child("User").child(user.getUid()).child("kid");
-            userRef.child(kid).updateChildren(kidUpdate);
-            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-        }
-        else
-            Log.d("FB", "failed to get current user");
+    private void updateKid(final Map<String, Object> kidUpdate){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    mRef = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference userRef = mRef.child("User").child(user.getUid()).child("kid");
+                    userRef.child(kid).updateChildren(kidUpdate);
+                    Toast.makeText(KidDetailActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    mRef = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference userRef = mRef.child("User").child(user.getUid()).child("kid");
+                    userRef.child(kid).onDisconnect().updateChildren(kidUpdate);
+//                    Toast.makeText(KidDetailActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+//
+                    Snackbar.make(findViewById(R.id.coorLay), "Changes will be made when internet connection is available.", Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(KidDetailActivity.this, error.getMessage().toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user.getUid() != null) {
+//            mRef = FirebaseDatabase.getInstance().getReference();
+//            DatabaseReference userRef = mRef.child("User").child(user.getUid()).child("kid");
+//            userRef.child(kid).updateChildren(kidUpdate);
+//            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+//        }
+//        else
+//            Log.d("FB", "failed to get current user");
         progressDialog.dismiss();
     }
 
@@ -320,7 +358,7 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupSpinner(String kstate){
+    private void setupSpinner(final String kstate, String kgender){
         spinner = (MaterialSpinner)findViewById(R.id.spinner_gender);
         spinner.setItems("Male", "Female");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
@@ -330,56 +368,60 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
             }
         });
         spinner.setSelectedIndex(1);
-        spinner_city = (MaterialSpinner)findViewById(R.id.spinner_city);
-        spinner_city.setItems("Perlis","Penang","Perak","Pahang","Selangor","Kedah","Kelantan","Terengganu","Negeri Sembilan","Melaka","Johor","Sabah","Sarawak");
-        spinner_city.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                state = item;
-            }
-        });
+        if(kgender.equals("Male")){
+            gender = "Male";
+            spinner.setSelectedIndex(0);
+        }
+        else{
+            gender = "Female";
+            spinner.setSelectedIndex(1);
+        }
 
-        int index = 0;
-        if(kstate.equals("Perlis")){
-            index = 0;
-        }
-        else if(kstate.equals("Penang")){
-            index = 1;
-        }
-        else if(kstate.equals("Perak")){
-            index = 2;
-        }
-        else if(kstate.equals("Pahang")){
-            index = 3;
-        }
-        else if(kstate.equals("Selangor")){
-            index = 4;
-        }
-        else if(kstate.equals("Kedah")){
-            index = 5;
-        }
-        else if(kstate.equals("Kelantan")){
-            index = 6;
-        }
-        else if(kstate.equals("Terengganu")){
-            index = 7;
-        }
-        else if(kstate.equals("Negeri Sembilan")){
-            index = 8;
-        }
-        else if(kstate.equals("Melaka")){
-            index = 9;
-        }
-        else if(kstate.equals("Johor")){
-            index = 10;
-        }
-        else if(kstate.equals("Sabah")){
-            index = 11;
-        }
-        else {
-            index = 12;
-        }
-        spinner_city.setSelectedIndex(index);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                index = 0;
+                if(kstate.equals("Perlis")){
+                    index = 0;
+                }
+                else if(kstate.equals("Penang")){
+                    index = 1;
+                }
+                else if(kstate.equals("Perak")){
+                    index = 2;
+                }
+                else if(kstate.equals("Pahang")){
+                    index = 3;
+                }
+                else if(kstate.equals("Selangor")){
+                    index = 4;
+                }
+                else if(kstate.equals("Kedah")){
+                    index = 5;
+                }
+                else if(kstate.equals("Kelantan")){
+                    index = 6;
+                }
+                else if(kstate.equals("Terengganu")){
+                    index = 7;
+                }
+                else if(kstate.equals("Negeri Sembilan")){
+                    index = 8;
+                }
+                else if(kstate.equals("Melaka")){
+                    index = 9;
+                }
+                else if(kstate.equals("Johor")){
+                    index = 10;
+                }
+                else if(kstate.equals("Sabah")){
+                    index = 11;
+                }
+                else {
+                    index = 12;
+                }
+            }
+        }).start();
     }
 
     private void setupPhoto(){
@@ -453,5 +495,40 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA, android.Manifest.permission.READ_EXTERNAL_STORAGE)
                 .check();
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        if(newPhoto){
+            newPhoto = false;
+            uploadImage();
+        }
+        else{
+            Kid kid = new Kid();
+            kid.setKid_name(etName.getText().toString());
+            kid.setKid_date(birthDate.getText().toString());
+            kid.setKid_gender(gender);
+            kid.setKid_state(state);
+            Map<String, Object> kidUpdate = kid.toMap();
+            updateKid(kidUpdate);
+        }
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages ;)
+            if (view instanceof EditText) {
+//                ((EditText) view).setError(message);
+                tilName.setError(message);
+                tilDate.setError(message);
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
+        }
+        progressDialog.dismiss();
     }
 }

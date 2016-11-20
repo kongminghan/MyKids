@@ -1,45 +1,35 @@
 package com.workshop2.mykids;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.workshop2.mykids.Adapter.ScheduleAdapter;
-import com.workshop2.mykids.Model.Kid;
-import com.workshop2.mykids.Model.Schedule;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.workshop2.mykids.adapter.ScheduleAdapter;
+import com.workshop2.mykids.model.Kid;
+import com.workshop2.mykids.model.Schedule;
 import com.workshop2.mykids.databinding.ActivityScheduleBinding;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
 
 public class ScheduleActivity extends AppCompatActivity {
     private ArrayList<Schedule> scheduleList;
@@ -52,12 +42,13 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_schedule);
-        setupTransition();
+//        setupTransition();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDarkKid));
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getIntent().getStringExtra("kname"));
+        binding.toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 //        binding.collapsingToolbar.setTitleEnabled(false);
 
 
@@ -75,16 +66,6 @@ public class ScheduleActivity extends AppCompatActivity {
 //            }
 //        });
 
-
-//        binding.tvName.setText(intent.getStringExtra("kname"));
-//        binding.tvDate.setText(intent.getStringExtra("kdate"));
-
-//        Glide.with(this)
-//                .load(intent.getStringExtra("kimage"))
-//                .bitmapTransform(new CircleTransform(this))
-//                .diskCacheStrategy(ALL)
-//                .into(binding.profileImage);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
 
@@ -96,6 +77,7 @@ public class ScheduleActivity extends AppCompatActivity {
 
             scheduleAdapter = new ScheduleAdapter(ScheduleActivity.this, scheduleList);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+            mLayoutManager.scrollToPosition(10);
             binding.rvSchedule.setLayoutManager(mLayoutManager);
             binding.rvSchedule.setItemAnimator(new DefaultItemAnimator());
             binding.rvSchedule.setHasFixedSize(true);
@@ -142,14 +124,15 @@ public class ScheduleActivity extends AppCompatActivity {
     private  ArrayList<Schedule> getScheduleList() throws ParseException {
         final ArrayList<Schedule> s = new ArrayList<>();
         final ArrayList<Schedule> ss = new ArrayList<>();
-        Firebase.setAndroidContext(this);
-        Firebase mRef = new Firebase("https://fir-mykids.firebaseio.com/");
-        Firebase userRef = mRef.child("User").
+
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userRef = mRef.child("User").
                 child(FirebaseAuth.getInstance().getCurrentUser().getUid()).
                 child("kid").
                 child(getIntent().getStringExtra("kid")).
                 child("schedule");
 
+        userRef.keepSynced(true);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -191,7 +174,7 @@ public class ScheduleActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
@@ -199,7 +182,7 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     private void setupTransition(){
-        Transition enterTrans = new Explode();
+        Transition enterTrans = new Slide();
         getWindow().setEnterTransition(enterTrans);
 
         Transition returnTrans = new Slide();

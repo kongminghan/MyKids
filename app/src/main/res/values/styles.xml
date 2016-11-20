@@ -10,7 +10,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -19,7 +19,9 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <!--<item name="android:windowActionBarOverlay">true</item>-->
         <item name="android:windowIsTranslucent">true</item>
 
         <!-- Toolbar Theme / Apply white arrow -->
@@ -31,11 +33,11 @@
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
-        <item name="android:windowContentTransitions">true</item>
+        <!--<item name="android:windowContentTransitions">true</item>-->
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:windowContentTransitions">true</item>
+        <!--<item name="android:windowContentTransitions">true</item>-->
     </style>
 
     <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -44,11 +46,11 @@
     </style>
 
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:windowContentTransitions">true</item>
+        <!--<item name="android:windowContentTransitions">true</item>-->
     </style>
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
-        <item name="android:windowContentTransitions">true</item>
+        <!--<item name="android:windowContentTransitions">true</item>-->
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
@@ -61,11 +63,14 @@
         <item name="colorPrimary">@color/colorPrimaryKid</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkKid</item>
         <item name="colorAccent">@color/colorAccentKid</item>
+
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
+
+        <!--<item name="android:textColorPrimary">@android:color/white</item>-->
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -77,7 +82,26 @@
         <!-- Toolbar Theme / Apply white arrow -->
         <item name="colorControlNormal">@color/toolbar</item>
         <item name="actionBarTheme">@style/ToolbarColoredClose</item>
+    </style>
 
+    <style name="AppThemeScheduleDetail" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryKid</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@color/colorAccentKid</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <!--<item name="android:textColorPrimary">@android:color/white</item>-->
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
 
     <style name="ToolbarColoredClose" parent="AppThemeKidDetail">

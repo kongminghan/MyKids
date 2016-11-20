@@ -1,4 +1,4 @@
-package com.workshop2.mykids.Model;
+package com.workshop2.mykids.model;
 
 /**
  * Created by MingHan on 14/11/2016.
@@ -7,6 +7,7 @@ package com.workshop2.mykids.Model;
 public class Hospital {
     String hospitalAddress, hospitalID, hospitalName, hospitalPoscode, hospitalTelNum
             , hospitalImage;
+    float latitute, longtitute;
 
     public Hospital(String hospitalAddress, String hospitalID, String hospitalName, String hospitalPoscode, String hospitalTelNum) {
         this.hospitalAddress = hospitalAddress;
@@ -14,6 +15,26 @@ public class Hospital {
         this.hospitalName = hospitalName;
         this.hospitalPoscode = hospitalPoscode;
         this.hospitalTelNum = hospitalTelNum;
+    }
+
+    public Hospital(){
+
+    }
+
+    public float getLatitute() {
+        return latitute;
+    }
+
+    public void setLatitute(float latitute) {
+        this.latitute = latitute;
+    }
+
+    public float getLongtitute() {
+        return longtitute;
+    }
+
+    public void setLongtitute(float longtitute) {
+        this.longtitute = longtitute;
     }
 
     public String getHospitalImage() {

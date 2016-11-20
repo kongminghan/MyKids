@@ -19,21 +19,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_margin="@dimen/card_margin">
+            android:layout_margin="@dimen/card_margin"
+            android:padding="8dp"
+            android:transitionName="tImageView">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title"
                 android:id="@+id/title"
-                android:textAppearance="@android:style/TextAppearance.Material.Headline" />
+                android:textAppearance="@android:style/TextAppearance.Material.Large"
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/description"
                 android:id="@+id/desc"
-                android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
 
         </LinearLayout>
 

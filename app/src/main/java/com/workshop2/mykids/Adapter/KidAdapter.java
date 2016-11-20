@@ -1,4 +1,4 @@
-package com.workshop2.mykids.Adapter;
+package com.workshop2.mykids.adapter;
 
 /**
  * Created by MingHan on 1/10/2016.
@@ -23,10 +23,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.workshop2.mykids.KidDetailActivity;
-import com.workshop2.mykids.Model.Kid;
+import com.workshop2.mykids.model.Kid;
 import com.workshop2.mykids.R;
 import com.workshop2.mykids.ScheduleActivity;
 
@@ -40,7 +41,6 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
     Context mContext;
     private ArrayList<Kid> kids;
     private Kid kid;
-    private Firebase mRef;
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public TextView title, count, card_kid, card_gender;
@@ -116,9 +116,9 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
 //                ActivityOptionsCompat options = ActivityOptionsCompat.
 //                        makeSceneTransitionAnimation((Activity)mContext, holder.kid_cardHolder, "kidHolder");
 //                context.startActivity(intent, options.toBundle());
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext);
-                context.startActivity(intent, options.toBundle());
-//                mContext.startActivity(intent);
+//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext);
+//                context.startActivity(intent, options.toBundle());
+                context.startActivity(intent);
             }
         });
 
@@ -178,12 +178,10 @@ public class KidAdapter extends RecyclerView.Adapter<KidAdapter.MyViewHolder> {
     }
 
     public void deleteKid(String id){
-
-        mRef = new Firebase("https://fir-mykids.firebaseio.com/User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        mRef.child("kid").child(id).removeValue();
-
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseReference.keepSynced(true);
+        databaseReference.child("kid").child(id).removeValue();
         Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
-
 //        mRef.child("kid").child(id).runTransaction(new Transaction.Handler() {
 //            public Transaction.Result doTransaction(MutableData mutableData) {
 //                mutableData.setValue(null); // This removes the node.

@@ -1,6 +1,4 @@
-package com.workshop2.mykids.Model;
-
-import android.content.Context;
+package com.workshop2.mykids.model;
 
 /**
  * Created by MingHan on 5/10/2016.

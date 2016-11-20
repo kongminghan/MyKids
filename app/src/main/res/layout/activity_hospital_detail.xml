@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <RelativeLayout
+            android:id="@+id/activity_hospital_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.workshop2.mykids.HospitalDetailActivity">
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_triple_height"
+                android:background="@color/schedule"
+                android:id="@+id/toolBar"
+                android:transitionName="tImageView">
+            </android.support.v7.widget.Toolbar>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cardView"
+                    android:layout_marginLeft="@dimen/cardview_toolbar_spacer"
+                    android:layout_marginRight="@dimen/cardview_toolbar_spacer"
+                    android:layout_marginTop="@dimen/toolbar_doubleH_height"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hospital Name"
+                            android:id="@+id/txtName"
+                            android:textAppearance="@android:style/TextAppearance.Material.Headline"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:textStyle="normal|bold"
+                            android:textAllCaps="false"
+                            android:layout_marginTop="6dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center"
+                            android:layout_marginBottom="6dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_schedule_black_24dp"
+                                    android:alpha="0.58" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/txtHour"
+                                    android:text="24 hours"
+                                    android:layout_margin="6dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:id="@+id/layTel"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_call_black_24dp"
+                                    android:alpha="0.58" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/txtTel"
+                                    android:layout_margin="6dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:gravity="center"
+                                android:id="@+id/layMap"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_directions_black_24dp"
+                                    android:alpha="0.58" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/txtAddress"
+                                    android:textAlignment="center"
+                                    android:layout_margin="6dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Not sure where is it? Here you go"-->
+                    <!--android:layout_margin="8dp"-->
+                    <!--android:fontFamily="sans-serif"-->
+                    <!--android:textColor="@color/md_material_blue_800"-->
+                    <!--android:textSize="16sp" />-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <fragment
+                        android:layout_width="match_parent"
+                        android:id="@+id/map"
+                        tools:context=".VaccineDetailActivity"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_gravity="bottom"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+</layout>
+

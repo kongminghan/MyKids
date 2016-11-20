@@ -1,6 +1,7 @@
-package com.workshop2.mykids.Adapter;
+package com.workshop2.mykids.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -10,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.workshop2.mykids.Model.Vaccine;
+import com.workshop2.mykids.model.Vaccine;
 import com.workshop2.mykids.R;
+import com.workshop2.mykids.VaccineDetailActivity;
 
 import java.util.ArrayList;
 
@@ -29,9 +32,8 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
     private Context mContext;
     private ArrayList<Vaccine> vaccines;
     private Vaccine vaccine;
-    OnItemClickListener mItemClickListener;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MyViewHolder extends RecyclerView.ViewHolder{
         public TextView vaccineName;
         public ImageView vaccineImage;
         public LinearLayout vaccineHolder;
@@ -44,23 +46,8 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
             vaccineImage = (ImageView)itemView.findViewById(R.id.vaccineImage);
             vaccineHolder = (LinearLayout)itemView.findViewById(R.id.vaccineHolder);
             vaccineNameHolder = (LinearLayout)itemView.findViewById(R.id.vaccineNameHolder);
-            vaccineHolder.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            if (mItemClickListener != null) {
-                mItemClickListener.onItemClick(itemView, getPosition());
-            }
-        }
-    }
-
-    public interface OnItemClickListener{
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mItemClickListener = mItemClickListener;
     }
 
     public VaccineAdapter(Context mContext, ArrayList<Vaccine> vaccines){
@@ -80,11 +67,6 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         vaccine = vaccines.get(position);
         holder.vaccineName.setText(vaccine.getVaccine_name());
-//
-//        Context context = mContext;
-//        int duration = Toast.LENGTH_SHORT;
-//        Toast toast = Toast.makeText(context,"binding" , duration);
-//        toast.show();
 
         Glide.with(mContext)
                 .load(vaccine.getVaccine_image())
@@ -102,6 +84,14 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
                         holder.vaccineImage.setImageBitmap(resource);
                     }
                 });
+
+        holder.vaccineImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "A", Toast.LENGTH_LONG).show();
+                mContext.startActivity(new Intent(mContext, VaccineDetailActivity.class));
+            }
+        });
     }
 
     @Override

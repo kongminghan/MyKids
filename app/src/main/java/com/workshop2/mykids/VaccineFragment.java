@@ -7,17 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.workshop2.mykids.Adapter.VaccineAdapter;
-import com.workshop2.mykids.Model.Kid;
-import com.workshop2.mykids.Model.Vaccine;
+import com.workshop2.mykids.adapter.VaccineAdapter;
+import com.workshop2.mykids.model.Vaccine;
+import com.workshop2.mykids.task.VaccineAsyncTask;
 
 import java.util.ArrayList;
 
@@ -72,19 +69,22 @@ public class VaccineFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view  =  inflater.inflate(R.layout.fragment_vaccine, container, false);
+//        Toolbar toolbar = (Toolbar)getActivity().findViewById(R.id.toolbar);
+//        toolbar.setBackgroundColor(getResources().getColor(R.color.vaccine));
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
-        vaccines = getVaccines();
+//        vaccines = getVaccines();
         vaccineAdapter = new VaccineAdapter(getContext(), vaccines);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(vaccineAdapter);
+//        recyclerView.setAdapter(vaccineAdapter);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        new VaccineAsyncTask(getActivity(), vaccineAdapter, recyclerView).execute();
         mListener.disableCollapse();
     }
 
@@ -115,28 +115,26 @@ public class VaccineFragment extends Fragment {
         getActivity().setTitle("Vaccine");
     }
 
-    private ArrayList<Vaccine> getVaccines(){
-        ArrayList<Vaccine> v = new ArrayList<>();
-        Firebase firebase = new Firebase("https://fir-mykids.firebaseio.com/")
-                .child("vaccine");
-        firebase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                vaccines.clear();
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    Vaccine vaccine = postSnapshot.getValue(Vaccine.class);
-                    vaccines.add(vaccine);
-                }
-                vaccineAdapter.notifyDataSetChanged();
-                System.out.println("NOTIFY DATA SET CHANGED");
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-        return v;
-    }
+//    private ArrayList<Vaccine> getVaccines(){
+//        Firebase firebase = new Firebase("https://fir-mykids.firebaseio.com/")
+//                .child("vaccine");
+//        firebase.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                vaccines.clear();
+//                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+//                    Vaccine vaccine = postSnapshot.getValue(Vaccine.class);
+//                    vaccines.add(vaccine);
+//                }
+//                vaccineAdapter.notifyDataSetChanged();
+//                System.out.println("NOTIFY DATA SET CHANGED");
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//
+//            }
+//        });
+//        return vaccines;
+//    }
 }

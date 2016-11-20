@@ -1,4 +1,4 @@
-package com.workshop2.mykids.Adapter;
+package com.workshop2.mykids.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.fmsirvent.ParallaxEverywhere.PEWImageView;
-import com.workshop2.mykids.Model.Schedule;
-import com.workshop2.mykids.R;
 import com.workshop2.mykids.ScheduleDetailActivity;
+import com.workshop2.mykids.model.Schedule;
+import com.workshop2.mykids.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.workshop2.mykids.Model.Schedule.CALENDER_TYPE;
-import static com.workshop2.mykids.Model.Schedule.EVENT_TYPE;
+import static com.workshop2.mykids.model.Schedule.CALENDER_TYPE;
+import static com.workshop2.mykids.model.Schedule.EVENT_TYPE;
 
 
 /**

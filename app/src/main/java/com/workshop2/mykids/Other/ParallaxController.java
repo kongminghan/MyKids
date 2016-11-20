@@ -1,4 +1,4 @@
-package com.workshop2.mykids.Other;
+package com.workshop2.mykids.other;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

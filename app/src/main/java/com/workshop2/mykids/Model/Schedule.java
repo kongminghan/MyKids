@@ -1,12 +1,8 @@
-package com.workshop2.mykids.Model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+package com.workshop2.mykids.model;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -18,14 +14,9 @@ public class Schedule implements Serializable{
     String s_date;
     String s_id;
     String s_time;
-
-    public boolean getS_status() {
-        return s_status;
-    }
-
-    public void setS_status(boolean s_status) {
-        this.s_status = s_status;
-    }
+    String notifyBefore;
+    String notifyTime;
+    String notifyDate;
 
     boolean s_status;
     int type;
@@ -96,7 +87,38 @@ public class Schedule implements Serializable{
         this.type = type;
     }
 
-    @JsonIgnore
+    public String getNotifyBefore() {
+        return notifyBefore;
+    }
+
+    public void setNotifyBefore(String notifyBefore) {
+        this.notifyBefore = notifyBefore;
+    }
+
+    public String getNotifyTime() {
+        return notifyTime;
+    }
+
+    public void setNotifyTime(String notifyTime) {
+        this.notifyTime = notifyTime;
+    }
+
+    public String getNotifyDate() {
+        return notifyDate;
+    }
+
+    public void setNotifyDate(String notifyDate) {
+        this.notifyDate = notifyDate;
+    }
+
+    public boolean getS_status() {
+        return s_status;
+    }
+
+    public void setS_status(boolean s_status) {
+        this.s_status = s_status;
+    }
+
     public Date compare() throws ParseException {
         SimpleDateFormat se = new SimpleDateFormat("dd-MM-yyyy");
         Date date = se.parse(s_date);
