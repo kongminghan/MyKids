@@ -17,6 +17,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +49,7 @@ public class KidFragment extends Fragment {
     public static RecyclerView recyclerView;
     private ArrayList<Kid> kidList;
     private KidAdapter kidAdapter;
+    private LinearLayout layoutEmpty;
 
     public KidFragment() {
         // Required empty public constructor
@@ -85,7 +87,7 @@ public class KidFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_kid, container, false);
-        ((MainActivity) getActivity()).getCollapsingToolbar().setTitle("MyKids");
+        layoutEmpty = (LinearLayout)view.findViewById(R.id.layoutEmpty);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user != null){
@@ -105,8 +107,8 @@ public class KidFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        new KidAsyncTask(getContext(), kidAdapter, recyclerView).execute();
-        mListener.enableCollapse();
+        new KidAsyncTask(getContext(), kidAdapter, recyclerView, layoutEmpty).execute();
+//        mListener.enableCollapse();
     }
 
     @Override
@@ -150,7 +152,7 @@ public class KidFragment extends Fragment {
     }
 
     public interface OnKidFragmentListener {
-        void enableCollapse();
+//        void enableCollapse();
     }
 
     @Override

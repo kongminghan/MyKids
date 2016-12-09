@@ -32,7 +32,7 @@ public class VaccineAsyncTask extends AsyncTask<Void, Void, ArrayList<Vaccine>>{
     @Override
     protected ArrayList<Vaccine> doInBackground(Void... params) {
         final ArrayList<Vaccine> vaccines = new ArrayList<>();
-        DatabaseReference firebase = FirebaseDatabase.getInstance().getReference("vaccine");
+        DatabaseReference firebase = FirebaseDatabase.getInstance().getReference("vaccines");
         firebase.keepSynced(true);
         firebase.addValueEventListener(new ValueEventListener() {
             @Override

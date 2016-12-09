@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.workshop2.mykids.adapter.EventAdapter;
 import com.workshop2.mykids.model.Event;
@@ -43,7 +44,7 @@ public class EventFragment extends Fragment {
     private RecyclerView recyclerView;
     private ArrayList<Event> events;
     private EventAdapter eventAdapter;
-
+    private LinearLayout layoutEmpty;
     private OnFragmentInteractionListener mListener;
 
     public EventFragment() {
@@ -82,12 +83,13 @@ public class EventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_event, container, false);
-
+        layoutEmpty = (LinearLayout) view.findViewById(R.id.layoutEmpty);
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
-        eventAdapter = new EventAdapter(getContext(), events);
+        eventAdapter = new EventAdapter(getContext(), events, recyclerView);
 //        recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         return view;
     }
@@ -95,8 +97,7 @@ public class EventFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        new EventAsyncTask(getActivity(), eventAdapter, recyclerView).execute();
-//        mListener.disableCollapse();
+        new EventAsyncTask(getActivity(), eventAdapter, recyclerView,layoutEmpty).execute();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

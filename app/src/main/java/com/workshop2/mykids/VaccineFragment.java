@@ -85,7 +85,7 @@ public class VaccineFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         new VaccineAsyncTask(getActivity(), vaccineAdapter, recyclerView).execute();
-        mListener.disableCollapse();
+//        mListener.disableCollapse();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class VaccineFragment extends Fragment {
     }
 
     public interface OnVaccineFragmentListener {
-        void disableCollapse();
+//        void disableCollapse();
     }
 
     @Override

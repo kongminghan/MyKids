@@ -25,7 +25,8 @@
             android:orientation="horizontal"
             android:id="@+id/layoutBottom">
 
-            <ImageView android:layout_width="60dp"
+            <ImageView
+                android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:id="@+id/vLetterView"
                 android:layout_marginLeft="16dp"

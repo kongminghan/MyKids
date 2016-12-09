@@ -5,20 +5,17 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +25,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.dd.CircularProgressButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,9 +41,6 @@ import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.mobsandgeeks.saripaar.ValidationError;
-import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.workshop2.mykids.model.Kid;
 import com.workshop2.mykids.model.Schedule;
@@ -62,18 +57,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import gun0912.tedbottompicker.TedBottomPicker;
 
-public class AddKidActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, Validator.ValidationListener, EditText.OnEditorActionListener{
+public class AddKidActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     public static final String EXTRA_PARAM_ID = "kid_id";
     public static String TAG = "AddKid";
     private static final int SELECT_PICTURE = 1;
     private ImageView imageView;
     private TextView lblPhoto;
-    private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton fab;
     private Toolbar toolbar;
     private MaterialSpinner spinner;
@@ -81,19 +74,16 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
             , state = "Perlis"
             ,imageName
             ,selectedImagePath
-            ,imagePath = "https://firebasestorage.googleapis.com/v0/b/firebase-mykids.appspot.com/o/kid%2Fkid_boy.png?alt=media&token=b24c572d-039a-4c40-ab96-b2578da443ee";
-    @NotEmpty
+            ,imagePath = "https://firebasestorage.googleapis.com/v0/b/mykidsapp-e0c43.appspot.com/o/kid%2Fkid_boy.png?alt=media&token=73561763-d890-49bb-a604-fd19939b241e";
     private EditText birthDate;
-    @NotEmpty
     private EditText etName;
     private EditText etState;
-    private TextInputLayout tilName, tilDate;
-    private Validator validator;
+    private TextInputLayout tilName, tilDate, tilState;
 
     private ProgressDialog progressDialog;
     private Uri file;
     private Bitmap bp;
-    private Button save;
+    private CircularProgressButton save;
     private Boolean newPhoto=false;
     private byte [] data_img;
     private ArrayList<Schedule> list;;
@@ -103,10 +93,9 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kid_detail);
 
-        validator = new Validator(this);
-        validator.setValidationListener(this);
         tilName = (TextInputLayout)findViewById(R.id.tilName);
         tilDate = (TextInputLayout)findViewById(R.id.tilDate);
+        tilState = (TextInputLayout)findViewById(R.id.tilState);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -204,11 +193,24 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
         etName = (EditText)findViewById(R.id.etName);
         etState = (EditText)findViewById(R.id.etState);
 
-        etName.setOnEditorActionListener(this);
-        birthDate.setOnEditorActionListener(this);
+        etName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
+            }
+        });
+
         birthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
+
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         AddKidActivity.this,
@@ -223,6 +225,10 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
         etState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
                 new MaterialDialog.Builder(AddKidActivity.this)
                         .title("State")
                         .items(R.array.state)
@@ -239,22 +245,45 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
             }
         });
 
-        save = (Button)findViewById(R.id.btnSave);
+        save = (CircularProgressButton)findViewById(R.id.btnSave);
+        save.setIndeterminateProgressMode(true);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                progressDialog = new ProgressDialog(AddKidActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
                 final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
                 connectedRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         boolean connected = snapshot.getValue(Boolean.class);
                         if (connected) {
-                            progressDialog = new ProgressDialog(AddKidActivity.this);
-                            progressDialog.setIndeterminate(true);
-                            progressDialog.setMessage("Loading...");
-                            progressDialog.show();
-                            validator.validate();
+                            if(!gotError()){
+                                save.setProgress(50);
+                                if(newPhoto){
+                                    newPhoto = false;
+                                    uploadImage();
+                                }
+                                else{
+                                    Kid kid = new Kid();
+                                    kid.setKid_name(etName.getText().toString());
+                                    kid.setKid_date(birthDate.getText().toString());
+                                    kid.setKid_gender(gender);
+                                    kid.setKid_image(imagePath);
+                                    kid.setKid_state(state);
+                                    try {
+                                        addKid(kid);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }else{
+                                save.setProgress(-1);
+                                progressDialog.dismiss();
+
+                            }
                         }
                         else{
                             Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
@@ -282,7 +311,7 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
             @Override
             public void run() {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReferenceFromUrl("gs://firebase-mykids.appspot.com/kid");
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://mykidsapp-e0c43.appspot.com/kid");
                 StorageReference kidRef = storageRef.child(imageName);
 
                 //        ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -430,13 +459,16 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                     newKid.setKid_id(ref.getKey());
                     ref.setValue(newKid);
                     message = "New kid is added";
-
+                    save.setProgress(100);
                     generateSchedule(newKid);
 
                     final String finalMessage = message;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            etState.setText("");
+                            etName.setText("");
+                            birthDate.setText("");
                             progressDialog.dismiss();
                             Toast.makeText(AddKidActivity.this, finalMessage, Toast.LENGTH_SHORT).show();
                         }
@@ -470,11 +502,11 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                 setNotify("BCG", c, 1);
 
                 c.add(Calendar.MONTH, 0);
-                list.add(new Schedule("Hepatitis B", formatter.format(c.getTime()), "2", "7:50 AM", 10, false));
+                list.add(new Schedule("HepB", formatter.format(c.getTime()), "2", "7:50 AM", 10, false));
                 setNotify("Hepatitis B", c, 2);
 
                 c.add(Calendar.MONTH, 1);
-                list.add(new Schedule("Hepatitis B", formatter.format(c.getTime()), "3", "7:50 AM", 10, false));
+                list.add(new Schedule("HepB", formatter.format(c.getTime()), "3", "7:50 AM", 10, false));
                 setNotify("Hepatitis B", c, 3);
 
                 c.add(Calendar.MONTH, 1);
@@ -484,7 +516,7 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                 list.add(new Schedule("Hib", formatter.format(c.getTime()), "5", "7:50 AM", 10, false));
                 setNotify("Hib", c, 5);
 
-                list.add(new Schedule("Polio", formatter.format(c.getTime()), "6", "7:50 AM", 10, false));
+                list.add(new Schedule("IPV", formatter.format(c.getTime()), "6", "7:50 AM", 10, false));
                 setNotify("Polio", c, 6);
 
 
@@ -495,7 +527,7 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                 list.add(new Schedule("Hib", formatter.format(c.getTime()), "8", "7:50 AM", 10, false));
                 setNotify("Hib", c, 8);
 
-                list.add(new Schedule("Polio", formatter.format(c.getTime()), "9", "7:50 AM", 10, false));
+                list.add(new Schedule("IPV", formatter.format(c.getTime()), "9", "7:50 AM", 10, false));
                 setNotify("Polio", c, 9);
 
 
@@ -506,13 +538,18 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                 list.add(new Schedule("Hib", formatter.format(c.getTime()), "11", "7:50 AM", 10, false));
                 setNotify("Hib", c, 11);
 
-                list.add(new Schedule("Polio", formatter.format(c.getTime()), "12", "7:50 AM", 10, false));
+                list.add(new Schedule("IPV", formatter.format(c.getTime()), "12", "7:50 AM", 10, false));
                 setNotify("Polio", c, 12);
 
 
                 c.add(Calendar.MONTH, 1);
-                list.add(new Schedule("Hepatitis B", formatter.format(c.getTime()), "13", "7:50 AM", 10, false));
+                list.add(new Schedule("HepB", formatter.format(c.getTime()), "13", "7:50 AM", 10, false));
                 setNotify("Hepatitis B", c, 13);
+
+                if(state.equals("Sabah")){
+                    list.add(new Schedule("Measles", formatter.format(c.getTime()), "13", "7:50 AM", 10, false));
+                    setNotify("Measles", c, 13);
+                }
 
                 c.add(Calendar.MONTH, 6);
                 list.add(new Schedule("MMR", formatter.format(c.getTime()), "14", "7:50 AM", 10, false));
@@ -525,28 +562,27 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                 list.add(new Schedule("Hib", formatter.format(c.getTime()), "16", "7:50 AM", 10, false));
                 setNotify("Hib", c, 16);
 
-                list.add(new Schedule("Polio", formatter.format(c.getTime()), "17", "7:50 AM", 10, false));
+                list.add(new Schedule("IPV", formatter.format(c.getTime()), "17", "7:50 AM", 10, false));
                 setNotify("Polio", c, 17);
 
 
                 c.add(Calendar.MONTH, 66);
-                list.add(new Schedule("Measles / MR", formatter.format(c.getTime()), "18", "7:50 AM", 10, false));
+                list.add(new Schedule("MMR", formatter.format(c.getTime()), "18", "7:50 AM", 10, false));
                 setNotify("Measles / MR", c, 18);
 
                 list.add(new Schedule("DT", formatter.format(c.getTime()), "19", "7:50 AM", 10, false));
                 setNotify("DT", c, 19);
 
-                list.add(new Schedule("Polio (OPV)", formatter.format(c.getTime()), "20", "7:50 AM", 10, false));
+                list.add(new Schedule("OPV", formatter.format(c.getTime()), "20", "7:50 AM", 10, false));
                 setNotify("Polio (OPV)", c, 20);
-
 
                 c.add(Calendar.MONTH, 72);
                 list.add(new Schedule("HPV", formatter.format(c.getTime()), "21", "7:50 AM", 10, false));
                 setNotify("HPV", c, 21);
 
                 c.add(Calendar.MONTH, 24);
-                list.add(new Schedule("ATT", formatter.format(c.getTime()), "22", "7:50 AM", 10, false));
-                setNotify("ATT", c, 22);
+                list.add(new Schedule("TT", formatter.format(c.getTime()), "22", "7:50 AM", 10, false));
+                setNotify("TT", c, 22);
 
                 FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -562,67 +598,36 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
             public void run() {
                 if(!cal.before(Calendar.getInstance())){
                     cal.set(Calendar.SECOND, 0);
-                    cal.set(Calendar.MINUTE, 50);
-                    cal.set(Calendar.HOUR_OF_DAY, 7);
-                    cal.add(Calendar.DAY_OF_MONTH, -2);
+                    cal.set(Calendar.MINUTE, 25);
+                    cal.set(Calendar.HOUR_OF_DAY, 18);
+//                    cal.add(Calendar.DAY_OF_MONTH, -2);
 
                     AlarmManager alarms = (AlarmManager)getSystemService(ALARM_SERVICE);
-                    Receiver receiver = new Receiver();
-                    IntentFilter filter = new IntentFilter("ALARM_ACTION");
-                    registerReceiver(receiver, filter);
-                    Intent intent = new Intent("ALARM_ACTION");
+                    Intent intent = new Intent(AddKidActivity.this, Receiver.class);
+                    intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                     intent.putExtra("title", title);
-                    PendingIntent operation = PendingIntent.getBroadcast(AddKidActivity.this, id+(int)cal.getTimeInMillis(), intent, 0);
-                    alarms.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), operation) ;
+                    PendingIntent operation = PendingIntent.getBroadcast(AddKidActivity.this, id+(int)cal.getTimeInMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarms.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), operation);
                 }
             }
         }).start();
     }
 
-    @Override
-    public void onValidationSucceeded() {
-        if(newPhoto){
-            newPhoto = false;
-            uploadImage();
+    public boolean gotError() {
+        boolean error = false;
+        if(etName.getText().toString().matches("")) {
+            tilName.setError("Cannot be empty");
+            error = true;
         }
-        else{
-            Kid kid = new Kid();
-            kid.setKid_name(etName.getText().toString());
-            kid.setKid_date(birthDate.getText().toString());
-            kid.setKid_gender(gender);
-            kid.setKid_image(imagePath);
-            kid.setKid_state(state);
-            try {
-                addKid(kid);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        if(etState.getText().toString().matches("")) {
+            tilState.setError("Cannot be empty");
+            error = true;
         }
-    }
-
-    @Override
-    public void onValidationFailed(List<ValidationError> errors) {
-        for (ValidationError error : errors) {
-            View view = error.getView();
-            String message = error.getCollatedErrorMessage(this);
-
-            // Display error messages ;)
-            if (view instanceof EditText) {
-//                ((EditText) view).setError(message);
-                tilName.setError(message);
-                tilDate.setError(message);
-            } else {
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-            }
+        if(birthDate.getText().toString().matches("")) {
+            tilDate.setError("Cannot be empty");
+            error = true;
         }
-        progressDialog.dismiss();
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        tilName.setError(null);
-        tilDate.setError(null);
-        return true;
+        return error;
     }
 
     private void setupSpinner(){
@@ -631,10 +636,14 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
                 gender = item;
                 if(!newPhoto){
                     if(gender.equals("Male")){
-                        imagePath = "https://firebasestorage.googleapis.com/v0/b/firebase-mykids.appspot.com/o/kid%2Fkid_boy.png?alt=media&token=b24c572d-039a-4c40-ab96-b2578da443ee";
+                        imagePath = "https://firebasestorage.googleapis.com/v0/b/mykidsapp-e0c43.appspot.com/o/kid%2Fkid_boy.png?alt=media&token=73561763-d890-49bb-a604-fd19939b241e";
                         Glide.with(AddKidActivity.this).load(R.drawable.kid_boy)
                                 .crossFade()
                                 .thumbnail(0.5f)
@@ -642,7 +651,7 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                                 .into(imageView);
                     }
                     else{
-                        imagePath = "https://firebasestorage.googleapis.com/v0/b/firebase-mykids.appspot.com/o/kid%2Fkid_girl.png?alt=media&token=27e7fd08-e63a-416f-b35f-adb8e26c134d";
+                        imagePath = "https://firebasestorage.googleapis.com/v0/b/mykidsapp-e0c43.appspot.com/o/kid%2Fkid_girl.png?alt=media&token=c9bfdf7e-8236-4157-a075-a9d4366d52d5";
                         Glide.with(AddKidActivity.this).load(R.drawable.kid_girl)
                                 .crossFade()
                                 .thumbnail(0.5f)

@@ -5,65 +5,79 @@ package com.workshop2.mykids.model;
  */
 
 public class Vaccine {
-  String vaccine_dis, vaccine_func, vaccine_id, vaccine_image, vaccine_name, vaccine_sym;
+  String vaccineDisease;
+    String vaccineFunction;
+    String vaccineID;
+    String vaccineImage;
+    String vaccineName;
+    String vaccineDiseaseSymptom;
+    String vaccineAbb;
 
-    public String getVaccine_dis() {
-        return vaccine_dis;
+    public String getVaccineAbb() {
+        return vaccineAbb;
     }
 
-    public void setVaccine_dis(String vaccine_dis) {
-        this.vaccine_dis = vaccine_dis;
+    public void setVaccineAbb(String vaccineAbb) {
+        this.vaccineAbb = vaccineAbb;
     }
 
-    public String getVaccine_func() {
-        return vaccine_func;
+    public String getVaccineDisease() {
+        return vaccineDisease;
     }
 
-    public void setVaccine_func(String vaccine_func) {
-        this.vaccine_func = vaccine_func;
+    public void setVaccineDisease(String vaccineDisease) {
+        this.vaccineDisease = vaccineDisease;
     }
 
-    public String getVaccine_id() {
-        return vaccine_id;
+    public String getVaccineFunction() {
+        return vaccineFunction;
     }
 
-    public void setVaccine_id(String vaccine_id) {
-        this.vaccine_id = vaccine_id;
+    public void setVaccineFunction(String vaccineFunction) {
+        this.vaccineFunction = vaccineFunction;
     }
 
-    public String getVaccine_image() {
-        return vaccine_image;
+    public String getVaccineID() {
+        return vaccineID;
     }
 
-    public void setVaccine_image(String vaccine_image) {
-        this.vaccine_image = vaccine_image;
+    public void setVaccineID(String vaccineID) {
+        this.vaccineID = vaccineID;
     }
 
-    public String getVaccine_name() {
-        return vaccine_name;
+    public String getVaccineImage() {
+        return vaccineImage;
     }
 
-    public void setVaccine_name(String vaccine_name) {
-        this.vaccine_name = vaccine_name;
+    public void setVaccineImage(String vaccineImage) {
+        this.vaccineImage = vaccineImage;
     }
 
-    public String getVaccine_sym() {
-        return vaccine_sym;
+    public String getVaccineName() {
+        return vaccineName;
     }
 
-    public void setVaccine_sym(String vaccine_sym) {
-        this.vaccine_sym = vaccine_sym;
+    public void setVaccineName(String vaccineName) {
+        this.vaccineName = vaccineName;
+    }
+
+    public String getVaccineDiseaseSymptom() {
+        return vaccineDiseaseSymptom;
+    }
+
+    public void setVaccineDiseaseSymptom(String vaccineDiseaseSymptom) {
+        this.vaccineDiseaseSymptom = vaccineDiseaseSymptom;
     }
 
     public Vaccine(){
 
     }
 
-    public Vaccine(String vaccine_dis, String vaccine_func, String vaccine_id, String vaccine_image, String vaccine_name, String vaccine_sym){
-        this.vaccine_dis = vaccine_dis;
-        this.vaccine_func = vaccine_func;
-        this.vaccine_id = vaccine_id;
-        this.vaccine_image = vaccine_image;
-        this.vaccine_sym = vaccine_sym;
+    public Vaccine(String vaccineDisease, String vaccineFunction, String vaccineID, String vaccineImage, String vaccineName, String vaccineDiseaseSymptom){
+        this.vaccineDisease = vaccineDisease;
+        this.vaccineFunction = vaccineFunction;
+        this.vaccineID = vaccineID;
+        this.vaccineImage = vaccineImage;
+        this.vaccineDiseaseSymptom = vaccineDiseaseSymptom;
     }
 }

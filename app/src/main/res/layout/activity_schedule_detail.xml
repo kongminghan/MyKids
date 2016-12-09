@@ -74,45 +74,49 @@
 
         <!--</android.support.design.widget.AppBarLayout>-->
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:elevation="@dimen/toolbarElevation">
+            android:layout_height="match_parent">
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:id="@+id/cardViewToolBar"
-                android:layout_marginLeft="@dimen/cardview_toolbar_spacer"
-                android:layout_marginRight="@dimen/cardview_toolbar_spacer"
-                android:layout_marginTop="@dimen/toolbar_double_height"
-                app:cardBackgroundColor="@android:color/white"
-                android:layout_height="wrap_content"
-                app:cardElevation="4dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:elevation="@dimen/toolbarElevation">
 
-                <LinearLayout
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:id="@+id/cardViewToolBar"
+                    android:layout_marginLeft="@dimen/cardview_toolbar_spacer"
+                    android:layout_marginRight="@dimen/cardview_toolbar_spacer"
+                    android:layout_marginTop="@dimen/toolbar_double_height"
+                    app:cardBackgroundColor="@android:color/white"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="4dp">
 
-                    <TextView
-                        android:id="@+id/txtDate"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:text="Fri 8 Aug"
-                        android:gravity="center"
-                        android:background="@color/schedule_title"
-                        android:textAppearance="@android:style/TextAppearance.Material.Display1"
-                        android:textSize="24sp"
-                        android:fontFamily="sans-serif-smallcaps"/>
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:alpha="0.12"
-                        android:background="@android:color/black" />
+                        <TextView
+                            android:id="@+id/txtDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:text="Fri 8 Aug"
+                            android:gravity="center"
+                            android:background="@color/schedule_title"
+                            android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                            android:textSize="24sp"
+                            android:fontFamily="sans-serif-smallcaps"/>
 
-                    <!--<LinearLayout-->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:alpha="0.12"
+                            android:background="@android:color/black" />
+
+                        <!--<LinearLayout-->
                         <!--android:layout_width="match_parent"-->
                         <!--android:layout_height="wrap_content"-->
                         <!--android:orientation="vertical"-->
@@ -171,126 +175,131 @@
 
                     </LinearLayout>
 
-            </android.support.v7.widget.CardView>
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:id="@+id/linearLayout"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:layout_marginBottom="32dp"
-                android:layout_marginTop="6dp">
-
-                <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:layout_margin="10dp">-->
-
-                <!--<ImageView-->
-                <!--android:layout_width="24dp"-->
-                <!--android:layout_height="24dp"-->
-                <!--android:src="@drawable/alarm"-->
-                <!--android:alpha="0.54"-->
-                <!--android:layout_marginEnd="38dp"-->
-                <!--android:layout_gravity="center" />-->
-
-                <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:layout_gravity="center">-->
-
-                <!--<TextView-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/txtDate"-->
-                <!--android:textSize="18sp"-->
-                <!--android:layout_width="180dp" />-->
-
-                <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/txtTime"-->
-                <!--android:textSize="18sp"-->
-                <!--android:layout_marginLeft="6dp" />-->
-
-                <!--</LinearLayout>-->
-
-                <!--</LinearLayout>-->
+                </android.support.v7.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="10dp">
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:id="@+id/linearLayout"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:layout_marginBottom="32dp"
+                    android:layout_marginTop="6dp">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/notification"
-                        android:alpha="0.54"
-                        android:layout_marginEnd="16dp"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="38dp" />
+                    <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:layout_margin="10dp">-->
 
-                    <com.jaredrummler.materialspinner.MaterialSpinner
+                    <!--<ImageView-->
+                    <!--android:layout_width="24dp"-->
+                    <!--android:layout_height="24dp"-->
+                    <!--android:src="@drawable/alarm"-->
+                    <!--android:alpha="0.54"-->
+                    <!--android:layout_marginEnd="38dp"-->
+                    <!--android:layout_gravity="center" />-->
+
+                    <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:layout_gravity="center">-->
+
+                    <!--<TextView-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/txtDate"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:layout_width="180dp" />-->
+
+                    <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/txtTime"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:layout_marginLeft="6dp" />-->
+
+                    <!--</LinearLayout>-->
+
+                    <!--</LinearLayout>-->
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/txtNotify"
-                        android:layout_gravity="center"
-                        android:textSize="14sp" />
+                        android:orientation="horizontal"
+                        android:layout_margin="10dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/notification"
+                            android:alpha="0.54"
+                            android:layout_marginEnd="16dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="38dp" />
+
+                        <com.jaredrummler.materialspinner.MaterialSpinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txtNotify"
+                            android:layout_gravity="center"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_margin="10dp">
+
+                        <CheckBox
+                            android:id="@+id/taken_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/MyCheckBox"
+                            android:layout_marginEnd="38dp"
+                            android:gravity="center_vertical|center|start" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Taken"
+                            android:fontFamily="sans-serif"
+                            android:textSize="14sp"
+                            android:textColor="?android:attr/textColorTertiary"
+                            android:textAppearance="@android:style/TextAppearance.Material.Small"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="25dp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="10dp">
+                    android:layout_height="0dp"
+                    android:gravity="center|bottom"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"
+                    android:id="@+id/lay">
 
-                    <CheckBox
-                        android:id="@+id/taken_checkbox"
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/txtReveal"
+                        android:text="Read more about this vaccine"
                         android:layout_height="wrap_content"
-                        android:theme="@style/MyCheckBox"
-                        android:layout_marginEnd="38dp"
-                        android:gravity="center_vertical|center|start" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Taken"
+                        android:layout_width="match_parent"
+                        android:textColor="@color/blue"
+                        android:background="@android:color/transparent"
                         android:fontFamily="sans-serif"
-                        android:textSize="14sp"
-                        android:textColor="?android:attr/textColorTertiary"
-                        android:textAppearance="@android:style/TextAppearance.Material.Small"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="25dp" />
-
+                        android:textAllCaps="false" />
                 </LinearLayout>
-
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:gravity="center|bottom"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp"
-                android:id="@+id/lay">
+        </RelativeLayout>
 
-                <Button
-                    android:id="@+id/txtReveal"
-                    android:text="Read more about this vaccine"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:textColor="@color/blue"
-                    android:background="@android:color/transparent" />
-            </LinearLayout>
-        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

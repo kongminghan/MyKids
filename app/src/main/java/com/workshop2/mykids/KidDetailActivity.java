@@ -14,7 +14,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.dd.CircularProgressButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,9 +40,6 @@ import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.mobsandgeeks.saripaar.ValidationError;
-import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.workshop2.mykids.model.Kid;
 import com.workshop2.mykids.other.CircleTransform;
@@ -54,12 +51,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
 
 import gun0912.tedbottompicker.TedBottomPicker;
 
-public class KidDetailActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, Validator.ValidationListener{
+public class KidDetailActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
     public static final String EXTRA_PARAM_ID = "kid_id";
     private static final int SELECT_PICTURE = 1;
     private ImageView imageView;
@@ -68,19 +64,16 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
     private FloatingActionButton fab;
     private Toolbar toolbar;
     private MaterialSpinner spinner, spinner_city;
-    private String gender = "Male", state = "Perlis",imageName,selectedImagePath, kid;
-    @NotEmpty
+    private String gender = "Male", state = "Perlis",imageName, selectedImagePath, kid;
     private EditText birthDate;
-    @NotEmpty
     private EditText etName;
     private EditText etState;
-    private TextInputLayout tilName, tilDate;
-    private Validator validator;
+    private TextInputLayout tilName, tilDate, tilState;
     private DatabaseReference mRef;
     private ProgressDialog progressDialog;
     private Uri file;
     private Bitmap bp;
-    private Button save;
+    private CircularProgressButton save;
     private Boolean newPhoto=false;
     private byte[] data_img;
     private int index;
@@ -90,10 +83,9 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kid_detail);
 
-        validator = new Validator(this);
-        validator.setValidationListener(this);
         tilName = (TextInputLayout)findViewById(R.id.tilName);
         tilDate = (TextInputLayout)findViewById(R.id.tilDate);
+        tilState = (TextInputLayout)findViewById(R.id.tilState);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -125,6 +117,10 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
         birthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         KidDetailActivity.this,
@@ -138,10 +134,23 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
 
         birthDate.setText(kdate);
         etName.setText(kname);
+        etName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
+            }
+        });
         etState.setText(kstate);
         etState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
                 new MaterialDialog.Builder(KidDetailActivity.this)
                         .title("State")
                         .items(R.array.state)
@@ -158,15 +167,50 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        save = (Button)findViewById(R.id.btnSave);
+        save = (CircularProgressButton)findViewById(R.id.btnSave);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = new ProgressDialog(KidDetailActivity.this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-                validator.validate();
+                final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+                connectedRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        boolean connected = snapshot.getValue(Boolean.class);
+                        if (connected) {
+                            progressDialog = new ProgressDialog(KidDetailActivity.this);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.show();
+                            if (!gotError()) {
+                                if (save.getProgress() == 0) {
+                                    save.setProgress(50);
+                                }else if(save.getProgress()==-1)
+                                    save.setProgress(50);
+                                if (newPhoto) {
+                                    newPhoto = false;
+                                    uploadImage();
+                                } else {
+                                    Kid kid = new Kid();
+                                    kid.setKid_name(etName.getText().toString());
+                                    kid.setKid_date(birthDate.getText().toString());
+                                    kid.setKid_gender(gender);
+                                    kid.setKid_state(state);
+                                    Map<String, Object> kidUpdate = kid.toMap();
+                                    updateKid(kidUpdate);
+                                }
+                            }else{
+                                save.setProgress(-1);
+                                progressDialog.dismiss();
+                            }
+                        }else{
+                            save.setProgress(-1);
+                            Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
             }
         });
     }
@@ -364,6 +408,10 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                tilName.setError(null);
+                tilDate.setError(null);
+                tilState.setError(null);
+                save.setProgress(0);
                 gender = item;
             }
         });
@@ -497,38 +545,20 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
                 .check();
     }
 
-    @Override
-    public void onValidationSucceeded() {
-        if(newPhoto){
-            newPhoto = false;
-            uploadImage();
+    public boolean gotError() {
+        boolean error = false;
+        if(etName.getText().toString().matches("")) {
+            tilName.setError("Cannot be empty");
+            error = true;
         }
-        else{
-            Kid kid = new Kid();
-            kid.setKid_name(etName.getText().toString());
-            kid.setKid_date(birthDate.getText().toString());
-            kid.setKid_gender(gender);
-            kid.setKid_state(state);
-            Map<String, Object> kidUpdate = kid.toMap();
-            updateKid(kidUpdate);
+        if(etState.getText().toString().matches("")) {
+            tilState.setError("Cannot be empty");
+            error = true;
         }
-    }
-
-    @Override
-    public void onValidationFailed(List<ValidationError> errors) {
-        for (ValidationError error : errors) {
-            View view = error.getView();
-            String message = error.getCollatedErrorMessage(this);
-
-            // Display error messages ;)
-            if (view instanceof EditText) {
-//                ((EditText) view).setError(message);
-                tilName.setError(message);
-                tilDate.setError(message);
-            } else {
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-            }
+        if(birthDate.getText().toString().matches("")) {
+            tilDate.setError("Cannot be empty");
+            error = true;
         }
-        progressDialog.dismiss();
+        return error;
     }
 }

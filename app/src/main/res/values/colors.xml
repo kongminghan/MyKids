@@ -46,7 +46,7 @@
     <color name="drawerTitle">#4c4c4c</color>
 
     <color name="colorPrimaryKid">#00bcd4</color>
-    <color name="colorPrimaryDarkKid">#0097A7</color>
+    <color name="colorPrimaryDarkKid">#0097a7</color>
     <color name="colorAccentKid">#03A9F4</color>
     <color name="schedule">#009688</color>
     <color name="schedule_card">#00796b</color>
@@ -61,4 +61,6 @@
     <color name="azure">#F7F8F8 </color>
     <color name="vaccine">#67abc1</color>
     <color name="vaccineDark">#0097A7</color>
+
+    <color name="cpb_grey">#ffdedede</color>
 </resources>

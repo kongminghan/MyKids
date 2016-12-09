@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,17 +24,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.fabtransitionactivity.SheetLayout;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
     private ImageView imgProfile, imageView;
     private Handler mHandler;
     private SheetLayout mSheetLayout;
+    private  GoogleApiClient mGoogleApiClient;
 
     public static int navItemIndex = 0;
     private static final String TAG_KID = "Kid";
@@ -74,14 +84,14 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
         return collapsingToolbarLayout;
     }
 
-    private void syncFrags() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
-        if (fragment instanceof VaccineFragment) {
-            disableCollapse();
-        } else if (fragment instanceof KidFragment) {
-            enableCollapse();
-        }
-    }
+//    private void syncFrags() {
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
+//        if (fragment instanceof VaccineFragment) {
+//            disableCollapse();
+//        } else if (fragment instanceof KidFragment) {
+//            enableCollapse();
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
                 savetoPref();
             }
         }).start();
-
-        checkInternet();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -132,6 +140,15 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
             loadHomeFragment();
         }
         loadNavHeader();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(AppIndex.API).build();
     }
 
     private void loadNavHeader() {
@@ -152,12 +169,16 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
         switch (navItemIndex) {
             case 0:
                 KidFragment kidFragment = new KidFragment();
+                collapsingToolbarLayout.setTitleEnabled(false);
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.kid));
                 collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(R.color.colorPrimaryDark));
                 collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
                 return kidFragment;
             case 1:
                 VaccineFragment vaccineFragment = new VaccineFragment();
+                collapsingToolbarLayout.setTitleEnabled(false);
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.vaccine_));
                 collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.vaccine));
                 collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(R.color.vaccineDark));
                 collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.vaccine));
@@ -166,9 +187,9 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
                 EventFragment eventFragment = new EventFragment();
                 collapsingToolbarLayout.setTitleEnabled(false);
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.coming));
-                collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.darkBlue));
+                collapsingToolbarLayout.setBackgroundColor(getResources().getColor(R.color.blue));
                 collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(R.color.darkBlue));
-                collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.darkBlue));
+                collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.blue));
 
 //                Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.coming);
 //                Palette.generateAsync(bitmap,
@@ -236,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
 
         // refresh toolbar menu
         invalidateOptionsMenu();
-        syncFrags();
+//        syncFrags();
     }
 
     private void selectNavMenu() {
@@ -316,54 +337,54 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
             drawer.closeDrawers();
             return;
         }
-        else{
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this)
-                .title("Are you sure")
-                .content("You are leaving MyKids App right now. Make sure do check your kid's schedule frequently. ")
-                .positiveText("Yes")
-                .negativeText("No")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        finish();
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        return;
-                    }
-                });
-
-        MaterialDialog dialog = builder.build();
-        dialog.show();
+        else if(navItemIndex != 0){
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_KID;
+            loadHomeFragment();
+//            syncFrags();
+            return;
         }
-//        if (shouldLoadHomeFragOnBackPress) {
-//            if (navItemIndex != 0) {
-//                navItemIndex = 0;
-//                CURRENT_TAG = TAG_KID;
-//                loadHomeFragment();
-//                return;
-//            }
-//        }
-//        syncFrags();
+        else{
+//        MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this)
+//                .title("Are you sure")
+//                .content("You are leaving MyKids App right now. Make sure do check your kid's schedule frequently. ")
+//                .positiveText("Yes")
+//                .negativeText("No")
+//                .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        finish();
+//                    }
+//                })
+//                .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                    @Override
+//                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        return;
+//                    }
+//                });
+//
+//        MaterialDialog dialog = builder.build();
+//        dialog.show();
+            super.onBackPressed();
+            finish();
+        }
     }
 
-    @Override
-    public void disableCollapse() {
-//        imageView.setVisibility(View.GONE);
-        imageView.setImageDrawable(getResources().getDrawable(R.drawable.vaccine_));
-        collapsingToolbarLayout.setTitleEnabled(false);
-//        toolbar.setTitle("");
-    }
+//    @Override
+//    public void disableCollapse() {
+////        imageView.setVisibility(View.GONE);
+//        imageView.setImageDrawable(getResources().getDrawable(R.drawable.vaccine_));
+////        collapsingToolbarLayout.setTitleEnabled(false);
+////        toolbar.setTitle("");
+//    }
 
-    @Override
-    public void enableCollapse() {
-//        imageView.setVisibility(View.VISIBLE);
-        imageView.setImageDrawable(getResources().getDrawable(R.drawable.kid));
-        collapsingToolbarLayout.setTitleEnabled(false);
-//        toolbar.setTitle("MyKids");
-    }
+//    @Override
+//    public void enableCollapse() {
+////        imageView.setVisibility(View.VISIBLE);
+//        imageView.setImageDrawable(getResources().getDrawable(R.drawable.kid));
+////        collapsingToolbarLayout.setTitleEnabled(false);
+////        toolbar.setTitle("MyKids");
+//    }
 
     private void savetoPref(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -384,21 +405,66 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    FirebaseAuth.getInstance().signOut();
-                    PrefManager prefManager =  new PrefManager(MainActivity.this);
-                    prefManager.setFirstTimeLaunch(true);
+//        // Handle action bar item clicks
+//        int id = item.getItemId();
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_logout) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+////                    Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+//                    FirebaseAuth.getInstance().signOut();
+//                }
+//            }).start();
+//
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    PrefManager prefManager =  new PrefManager(MainActivity.this);
+//                    prefManager.setFirstTimeLaunch(true);
+//                }
+//            }).start();
+//            startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
+//            return true;
+//        }
+
+        mGoogleApiClient.connect();
+        mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+
+//                FirebaseAuth.getInstance().signOut();
+                if(mGoogleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if (status.isSuccess()) {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        FirebaseAuth.getInstance().signOut();
+                                        PrefManager prefManager =  new PrefManager(MainActivity.this);
+                                        prefManager.setFirstTimeLaunch(true);
+                                    }
+                                }).start();
+                                Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(MainActivity.this, "WTF", Toast.LENGTH_SHORT).show();
                 }
-            }).start();
-            startActivity(new Intent(MainActivity.this, WelcomeActivity.class));
-            return true;
-        }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+                Log.d("Logout", "Google API Client Connection Suspended");
+            }
+        });
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -424,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
         }
     }
 
-    public void checkInternet(){
+//    public void checkInternet(){
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -445,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
 //                });
 //            }
 //        }).start();
-    }
+//    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

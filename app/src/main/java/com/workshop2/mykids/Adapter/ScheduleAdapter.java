@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.fmsirvent.ParallaxEverywhere.PEWImageView;
 import com.workshop2.mykids.ScheduleDetailActivity;
 import com.workshop2.mykids.model.Schedule;
 import com.workshop2.mykids.R;
@@ -215,12 +214,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class CalendarViewHolder extends RecyclerView.ViewHolder{
-        private PEWImageView imageView;
+        private ImageView imageView;
         private TextView monthYear;
 
         public CalendarViewHolder(View itemView) {
             super(itemView);
-            imageView = (PEWImageView)itemView.findViewById(R.id.monthImage);
+            imageView = (ImageView)itemView.findViewById(R.id.monthImage);
             monthYear = (TextView)itemView.findViewById(R.id.tvMonthYear);
         }
     }

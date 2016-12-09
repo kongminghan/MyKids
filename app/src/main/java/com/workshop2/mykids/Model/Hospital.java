@@ -7,7 +7,7 @@ package com.workshop2.mykids.model;
 public class Hospital {
     String hospitalAddress, hospitalID, hospitalName, hospitalPoscode, hospitalTelNum
             , hospitalImage;
-    float latitute, longtitute;
+    float hospitalLatitude, hospitalLongitude;
 
     public Hospital(String hospitalAddress, String hospitalID, String hospitalName, String hospitalPoscode, String hospitalTelNum) {
         this.hospitalAddress = hospitalAddress;
@@ -21,20 +21,20 @@ public class Hospital {
 
     }
 
-    public float getLatitute() {
-        return latitute;
+    public float getHospitalLatitude() {
+        return hospitalLatitude;
     }
 
-    public void setLatitute(float latitute) {
-        this.latitute = latitute;
+    public void setHospitalLatitude(float hospitalLatitude) {
+        this.hospitalLatitude = hospitalLatitude;
     }
 
-    public float getLongtitute() {
-        return longtitute;
+    public float getHospitalLongitude() {
+        return hospitalLongitude;
     }
 
-    public void setLongtitute(float longtitute) {
-        this.longtitute = longtitute;
+    public void setHospitalLongitude(float hospitalLongitude) {
+        this.hospitalLongitude = hospitalLongitude;
     }
 
     public String getHospitalImage() {

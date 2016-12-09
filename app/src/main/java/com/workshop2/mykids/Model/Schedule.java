@@ -17,6 +17,7 @@ public class Schedule implements Serializable{
     String notifyBefore;
     String notifyTime;
     String notifyDate;
+//    String age;
 
     boolean s_status;
     int type;

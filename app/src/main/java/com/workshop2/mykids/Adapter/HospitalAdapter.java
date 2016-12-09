@@ -64,8 +64,8 @@ public class HospitalAdapter extends RecyclerView.Adapter<HospitalAdapter.Hospit
                 intent.putExtra("hImage", hospitals.get(position).getHospitalImage());
                 intent.putExtra("hTel", hospitals.get(position).getHospitalTelNum());
 //                intent.putExtra("hPostCode", hospitals.get(position).getHospitalPoscode());
-                intent.putExtra("lat", hospitals.get(position).getLatitute());
-                intent.putExtra("longt", hospitals.get(position).getLongtitute());
+                intent.putExtra("lat", hospitals.get(position).getHospitalLatitude());
+                intent.putExtra("longt", hospitals.get(position).getHospitalLongitude());
                 ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity)context, ((HospitalViewHolder)holder).imageView, "tImageView");
                 context.startActivity(intent, optionsCompat.toBundle());
             }

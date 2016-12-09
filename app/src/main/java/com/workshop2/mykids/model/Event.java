@@ -13,7 +13,10 @@ public class Event {
     String notifyTime;
     String notifyDate;
 
-    String kid_name, kid_image;
+    String kid_name;
+    String kid_image;
+    String kid_date;
+    String kid_id;
 
     boolean s_status;
     int type;
@@ -21,6 +24,21 @@ public class Event {
     public static final int TITLE = 11;
     public static final int EVENT = 10;
 
+    public String getKid_id() {
+        return kid_id;
+    }
+
+    public void setKid_id(String kid_id) {
+        this.kid_id = kid_id;
+    }
+
+    public String getKid_date() {
+        return kid_date;
+    }
+
+    public void setKid_date(String kid_date) {
+        this.kid_date = kid_date;
+    }
 
     public String getKid_name() {
         return kid_name;
@@ -38,21 +56,23 @@ public class Event {
         this.kid_image = kid_image;
     }
 
-    public Event(String s_name, String s_date, String s_id, String s_time, String kid_name, String kid_image, int type) {
+    public Event(String s_name, String s_date, String s_id, String s_time, String kid_name, String kid_date, String kid_id, int type) {
         this.s_name = s_name;
         this.s_date = s_date;
         this.s_id = s_id;
         this.s_time = s_time;
-        this.kid_image = kid_image;
+        this.kid_id = kid_id;
         this.kid_name = kid_name;
+        this.kid_date = kid_date;
         this.type = type;
     }
 
     public Event(){}
 
-    public Event(String kid_name, int type){
+    public Event(String kid_name, String kid_date, int type){
         this.type = type;
         this.kid_name=kid_name;
+        this.kid_date = kid_date;
     }
 
     public String getS_date() {

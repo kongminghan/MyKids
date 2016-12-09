@@ -8,10 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -31,13 +31,13 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
 
     private Context mContext;
     private ArrayList<Vaccine> vaccines;
-    private Vaccine vaccine;
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public TextView vaccineName;
         public ImageView vaccineImage;
         public LinearLayout vaccineHolder;
-        public LinearLayout vaccineNameHolder;
+//        public LinearLayout vaccineNameHolder;
+        public TextView vaccineDesc;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -45,7 +45,8 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
             vaccineName = (TextView)itemView.findViewById(R.id.vaccineName);
             vaccineImage = (ImageView)itemView.findViewById(R.id.vaccineImage);
             vaccineHolder = (LinearLayout)itemView.findViewById(R.id.vaccineHolder);
-            vaccineNameHolder = (LinearLayout)itemView.findViewById(R.id.vaccineNameHolder);
+//            vaccineNameHolder = (LinearLayout)itemView.findViewById(R.id.vaccineNameHolder);
+            vaccineDesc = (TextView)itemView.findViewById(R.id.vaccineDesc);
         }
 
     }
@@ -65,31 +66,41 @@ public class VaccineAdapter extends RecyclerView.Adapter<VaccineAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        vaccine = vaccines.get(position);
-        holder.vaccineName.setText(vaccine.getVaccine_name());
+        final Vaccine vaccine = vaccines.get(position);
+        holder.vaccineName.setText(vaccine.getVaccineName());
+        holder.vaccineDesc.setText(vaccine.getVaccineFunction());
 
         Glide.with(mContext)
-                .load(vaccine.getVaccine_image())
-                .asBitmap()
+                .load(vaccine.getVaccineImage())
+                .placeholder(R.drawable.placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Palette.generateAsync(resource, new Palette.PaletteAsyncListener() {
-                            public void onGenerated(Palette palette) {
-                                int bgColor = palette.getMutedColor(mContext.getResources().getColor(android.R.color.white));
-                                holder.vaccineNameHolder.setBackgroundColor(bgColor);
-                            }
-                        });
-                        holder.vaccineImage.setImageBitmap(resource);
-                    }
-                });
+                .into(holder.vaccineImage);
 
         holder.vaccineImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "A", Toast.LENGTH_LONG).show();
-                mContext.startActivity(new Intent(mContext, VaccineDetailActivity.class));
+                Intent intent = new Intent(mContext, VaccineDetailActivity.class);
+                intent.putExtra("dis", vaccine.getVaccineDisease());
+                intent.putExtra("sym", vaccine.getVaccineDiseaseSymptom());
+                intent.putExtra("func", vaccine.getVaccineFunction());
+                intent.putExtra("image", vaccine.getVaccineImage());
+                intent.putExtra("name", vaccine.getVaccineName());
+                intent.putExtra("title", vaccine.getVaccineAbb());
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.vaccineHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, VaccineDetailActivity.class);
+                intent.putExtra("dis", vaccine.getVaccineDisease());
+                intent.putExtra("sym", vaccine.getVaccineDiseaseSymptom());
+                intent.putExtra("func", vaccine.getVaccineFunction());
+                intent.putExtra("image", vaccine.getVaccineImage());
+                intent.putExtra("name", vaccine.getVaccineName());
+                intent.putExtra("title", vaccine.getVaccineAbb());
+                mContext.startActivity(intent);
             }
         });
     }

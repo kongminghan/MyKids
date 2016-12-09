@@ -138,39 +138,41 @@ public class ScheduleActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ss.clear();
                 s.clear();
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    Schedule schedule = postSnapshot.getValue(Schedule.class);
-                    ss.add(schedule);
-                }
-                SimpleDateFormat se = new SimpleDateFormat("dd-MM-yyyy");
-                Calendar c = Calendar.getInstance();
-                Calendar cc = Calendar.getInstance();
-
-                s.add(new Schedule(ss.get(0).getS_date(),11));
-
-                for(int i=1; i<ss.size(); i++){
-                    Date date = null;
-                    Date date1 = null;
-                    try {
-                        date = se.parse(ss.get(i-1).getS_date());
-                        date1 = se.parse(ss.get(i).getS_date());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                if(dataSnapshot.hasChildren()){
+                    for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                        Schedule schedule = postSnapshot.getValue(Schedule.class);
+                        ss.add(schedule);
                     }
-                    c.setTime(date);
-                    cc.setTime(date1);
+                    SimpleDateFormat se = new SimpleDateFormat("dd-MM-yyyy");
+                    Calendar c = Calendar.getInstance();
+                    Calendar cc = Calendar.getInstance();
 
-                    if(c.get(Calendar.MONTH) != cc.get(Calendar.MONTH) || c.get(Calendar.YEAR) != cc.get(Calendar.YEAR)){
-                        s.add(ss.get(i-1));
-                        s.add(new Schedule(ss.get(i).getS_date(), 11));
+                    s.add(new Schedule(ss.get(0).getS_date(),11));
+
+                    for(int i=1; i<ss.size(); i++){
+                        Date date = null;
+                        Date date1 = null;
+                        try {
+                            date = se.parse(ss.get(i-1).getS_date());
+                            date1 = se.parse(ss.get(i).getS_date());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        c.setTime(date);
+                        cc.setTime(date1);
+
+                        if(c.get(Calendar.MONTH) != cc.get(Calendar.MONTH) || c.get(Calendar.YEAR) != cc.get(Calendar.YEAR)){
+                            s.add(ss.get(i-1));
+                            s.add(new Schedule(ss.get(i).getS_date(), 11));
+                        }
+                        else
+                            s.add(ss.get(i-1));
                     }
-                    else
-                        s.add(ss.get(i-1));
-                }
-                s.add(ss.get(ss.size()-1));
+                    s.add(ss.get(ss.size()-1));
 
-                scheduleAdapter.notifyDataSetChanged();
-                System.out.println("Schedule adapter updated");
+                    scheduleAdapter.notifyDataSetChanged();
+                    System.out.println("Schedule adapter updated");
+                }
             }
 
             @Override

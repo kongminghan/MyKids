@@ -154,6 +154,8 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
             @Override
             public void run() {
                 cal = Calendar.getInstance();
+                cal2 = Calendar.getInstance();
+
                 SimpleDateFormat se = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
                 Date date = null;
                 try {
@@ -174,6 +176,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
                     e.printStackTrace();
                 }
                 final String finalTempDate = tempDate;
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -278,11 +281,10 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
 
     public void setAlarm(final int position){
         SimpleDateFormat se = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-
-        Intent myIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-        myIntent.setAction("android.media.action.DISPLAY_NOTIFICATION");
+        Intent myIntent = new Intent(ScheduleDetailActivity.this, Receiver.class);
+//        myIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         myIntent.putExtra("title", sName);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ScheduleDetailActivity.this, Integer.parseInt(sID)+(int)cal.getTimeInMillis(), myIntent,0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ScheduleDetailActivity.this, Integer.parseInt(sID)+(int)cal2.getTimeInMillis(), myIntent,0);
         AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
          if (position == 0) {
              cal2.add(Calendar.MINUTE, -2);
@@ -300,7 +302,6 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
              cal2.add(Calendar.SECOND, 0);
              message = "Notification will be triggered on "+se.format(cal2.getTime());
          }
-//        Calendar calendar = Calendar.getInstance();
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal2.getTimeInMillis(), pendingIntent); ;
         Toast.makeText(ScheduleDetailActivity.this, message, Toast.LENGTH_LONG).show();
 
@@ -361,7 +362,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
             @Override
             public void run() {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                 Map<String, Object> s = new HashMap<>();
                 s.put("s_date", sDate);
@@ -436,27 +437,27 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
 //        }
     }
 
-    private ArrayList<Hospital> getHospitals(){
-        final ArrayList<Hospital> hospitals = new ArrayList<>();
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("hospitals");
-        mRef.keepSynced(true);
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                hospitals.clear();
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    Hospital hospital = postSnapshot.getValue(Hospital.class);
-                    hospitals.add(hospital);
-                }
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-            }
-        });
-        return hospitals;
-    }
+//    private ArrayList<Hospital> getHospitals(){
+//        final ArrayList<Hospital> hospitals = new ArrayList<>();
+//        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("hospitals");
+//        mRef.keepSynced(true);
+//        mRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                hospitals.clear();
+//                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+//                    Hospital hospital = postSnapshot.getValue(Hospital.class);
+//                    hospitals.add(hospital);
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError firebaseError) {
+//            }
+//        });
+//        return hospitals;
+//    }
 
     /**
      * RecyclerView item decoration - give equal margin around grid item
@@ -516,6 +517,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
                 if(isChecked){
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference mRef =FirebaseDatabase.getInstance().getReference()
+                            .child("User")
                             .child(FirebaseAuth.getInstance()
                                     .getCurrentUser()
                                     .getUid());
@@ -543,6 +545,7 @@ public class ScheduleDetailActivity extends AppCompatActivity implements TimePic
                 else{
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference()
+                            .child("User")
                             .child(FirebaseAuth.getInstance()
                                     .getCurrentUser()
                                     .getUid());

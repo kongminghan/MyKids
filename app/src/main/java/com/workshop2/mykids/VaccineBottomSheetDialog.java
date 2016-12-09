@@ -2,7 +2,9 @@ package com.workshop2.mykids;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,7 +38,6 @@ import com.workshop2.mykids.adapter.HospitalAdapter;
 import com.workshop2.mykids.model.Hospital;
 import com.workshop2.mykids.model.Vaccine;
 import com.workshop2.mykids.task.HospitalAsyncTask;
-import com.workshop2.mykids.task.VaccineAsyncTask;
 
 import java.util.ArrayList;
 
@@ -96,48 +97,44 @@ public class VaccineBottomSheetDialog extends BottomSheetDialogFragment {
 
     private void setVaccine(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("vaccine");
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("vaccines");
         mRef.keepSynced(true);
 
         final Vaccine[] vaccine = new Vaccine[1];
 
         if (user.getUid() != null) {
-            mRef.orderByChild("vaccine_name").equalTo(sName).addListenerForSingleValueEvent(new ValueEventListener() {
+            mRef.orderByChild("vaccineAbb").equalTo(sName).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
                         vaccine[0] = postSnapshot.getValue(Vaccine.class);
                     }
-//                    Toast.makeText(ScheduleDetailActivity.this, vaccine.getVaccine_func(), Toast.LENGTH_LONG).show();
-                    vTitle.setText(sName);
-                    vDes.setText(vaccine[0].getVaccine_func());
-                    vDis.setText(vaccine[0].getVaccine_dis());
-                    vSym.setText(vaccine[0].getVaccine_sym());
+//                    Toast.makeText(ScheduleDetailActivity.this, vaccine.getVaccineFunction(), Toast.LENGTH_LONG).show();
+                    vTitle.setText(vaccine[0].getVaccineName());
+                    vDes.setText(vaccine[0].getVaccineFunction());
+                    vDis.setText(vaccine[0].getVaccineDisease());
+                    vSym.setText(vaccine[0].getVaccineDiseaseSymptom());
 
                     Glide.with(VaccineBottomSheetDialog.this)
-                            .load(vaccine[0].getVaccine_image())
+                            .load(vaccine[0].getVaccineImage())
                             .diskCacheStrategy(DiskCacheStrategy.RESULT)
                             .into(vImg);
 
-                    Glide.with(VaccineBottomSheetDialog.this)
-                            .load(vaccine[0].getVaccine_image())
-                            .asBitmap()
-                            .centerCrop()
-                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                            .into(new SimpleTarget<Bitmap>() {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int bgColor = getMatColor("600");
+                            final TextDrawable drawable1 = TextDrawable.builder()
+                                    .buildRound(sName.substring(0,1), bgColor); // radius in px
+                            getActivity().runOnUiThread(new Runnable() {
                                 @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    Palette.generateAsync(resource, new Palette.PaletteAsyncListener() {
-                                        public void onGenerated(Palette palette) {
-                                            int bgColor = palette.getVibrantColor(VaccineBottomSheetDialog.this.getResources().getColor(R.color.white));
-                                            TextDrawable drawable1 = TextDrawable.builder()
-                                                    .buildRound(sName.substring(0,1), bgColor); // radius in px
-                                            vLetterView.setImageDrawable(drawable1);
-                                        }
-                                    });
-                                    vImg.setImageBitmap(resource);
+                                public void run() {
+                                    vLetterView.setImageDrawable(drawable1);
+
                                 }
                             });
+                        }
+                    }).start();
                 }
 
                 @Override
@@ -210,5 +207,20 @@ public class VaccineBottomSheetDialog extends BottomSheetDialogFragment {
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    private int getMatColor(String typeColor)
+    {
+        int returnColor = Color.BLACK;
+        int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", getActivity().getPackageName());
+
+        if (arrayId != 0)
+        {
+            TypedArray colors = getResources().obtainTypedArray(arrayId);
+            int index = (int) (Math.random() * colors.length());
+            returnColor = colors.getColor(index, Color.BLACK);
+            colors.recycle();
+        }
+        return returnColor;
     }
 }

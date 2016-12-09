@@ -3,6 +3,8 @@ package com.workshop2.mykids.task;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,11 +32,13 @@ public class EventAsyncTask extends AsyncTask<Void, Void, ArrayList<Event>>{
     private Context context;
     private EventAdapter eventAdapter;
     private RecyclerView recyclerView;
+    private LinearLayout layoutEmpty;
 
-    public EventAsyncTask(Context context, EventAdapter eventAdapter, RecyclerView recyclerView){
+    public EventAsyncTask(Context context, EventAdapter eventAdapter, RecyclerView recyclerView, LinearLayout layoutEmpty){
         this.context = context;
         this.eventAdapter = eventAdapter;
         this.recyclerView = recyclerView;
+        this.layoutEmpty = layoutEmpty;
     }
 
     @Override
@@ -57,25 +61,40 @@ public class EventAsyncTask extends AsyncTask<Void, Void, ArrayList<Event>>{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 kids.clear();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Kid kid = postSnapshot.getValue(Kid.class);
-                    i[0]=0; kids.add(new Event(kid.getKid_name(), 11));
-                    for(Schedule s : kid.getSchedule()){
-                        try {
-                            date[0] = formatter.parse(s.getS_date());
-                            c.setTime(date[0]);
+                if(dataSnapshot.hasChildren()){
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Kid kid = postSnapshot.getValue(Kid.class);
+                        i[0]=0; kids.add(new Event(kid.getKid_name(), kid.getKid_date(), 11));
+                        if(kid.getSchedule()!=null){
+                            for(Schedule s : kid.getSchedule()){
+                                try {
+                                    date[0] = formatter.parse(s.getS_date());
+                                    c.setTime(date[0]);
 
-                            if(!c.before(Calendar.getInstance()) && i[0] <5){
+                                    if(!c.before(Calendar.getInstance()) && i[0] <5){
 //                                schedules.add(s);
-                                kids.add(new Event(s.getS_name(), s.getS_date(), s.getS_id(), s.getS_time(), kid.getKid_name(), kid.getKid_image(), 10));
-                                i[0]++;
+                                        kids.add(new Event(s.getS_name(), s.getS_date(), s.getS_id(), s.getS_time(), kid.getKid_name(), kid.getKid_date(), kid.getKid_id(), 10));
+                                        i[0]++;
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        }
+                        else{
+                            return;
                         }
                     }
+                    eventAdapter.notifyDataSetChanged();
+
+                    if(kids.isEmpty()){
+                        recyclerView.setVisibility(View.GONE);
+                        layoutEmpty.setVisibility(View.VISIBLE);
+                    }else{
+                        recyclerView.setVisibility(View.VISIBLE);
+                        layoutEmpty.setVisibility(View.GONE);
+                    }
                 }
-                eventAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -92,7 +111,7 @@ public class EventAsyncTask extends AsyncTask<Void, Void, ArrayList<Event>>{
     }
 
     protected void onPostExecute(ArrayList<Event> result) {
-        eventAdapter = new EventAdapter(context, result);
+        eventAdapter = new EventAdapter(context, result, recyclerView);
         recyclerView.setAdapter(eventAdapter);
     }
 }

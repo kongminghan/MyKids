@@ -3,6 +3,8 @@ package com.workshop2.mykids.task;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,10 +26,12 @@ public class KidAsyncTask extends AsyncTask<Void, Void, ArrayList<Kid>>{
     private Context context;
     private KidAdapter adapter;
     private RecyclerView recyclerView;
-    public KidAsyncTask(Context context, KidAdapter adapter, RecyclerView recyclerView){
+    private LinearLayout layoutEmpty;
+    public KidAsyncTask(Context context, KidAdapter adapter, RecyclerView recyclerView, LinearLayout layoutEmpty){
         this.context = context;
         this.adapter = adapter;
         this.recyclerView = recyclerView;
+        this.layoutEmpty = layoutEmpty;
     }
 
     @Override
@@ -50,6 +54,14 @@ public class KidAsyncTask extends AsyncTask<Void, Void, ArrayList<Kid>>{
                     kidList.add(kid);
                 }
                 adapter.notifyDataSetChanged();
+
+                if(kidList.isEmpty()){
+                    recyclerView.setVisibility(View.GONE);
+                    layoutEmpty.setVisibility(View.VISIBLE);
+                }else{
+                    recyclerView.setVisibility(View.VISIBLE);
+                    layoutEmpty.setVisibility(View.GONE);
+                }
             }
 
             @Override
