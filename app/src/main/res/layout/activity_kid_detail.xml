@@ -35,8 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         android:elevation="9dp">
 
             <ImageView
@@ -64,7 +62,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="26dp">
             <ImageView
                 android:id="@+id/profile"
                 app:srcCompat="@drawable/ic_profile"
@@ -81,7 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tilName"
-                app:errorEnabled="true">
+                app:errorEnabled="true"
+                app:hintEnabled="false">
 
                 <EditText
                     android:id="@+id/etName"
@@ -104,7 +103,8 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/profile2"
-                app:srcCompat="@drawable/ic_profile"
+                app:srcCompat="@drawable/ic_date_range_black_24dp"
+                android:alpha="0.54"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginBottom="16dp"
@@ -112,14 +112,14 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
-                android:visibility="invisible"
                 tools:ignore="RtlHardcoded" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tilDate"
-                app:errorEnabled="true">
+                app:errorEnabled="true"
+                app:hintEnabled="false">
 
                 <EditText
                     android:id="@+id/birthDate"
@@ -146,7 +146,7 @@
             android:orientation="horizontal">
             <ImageView
                 android:id="@+id/profile3"
-                app:srcCompat="@drawable/ic_profile"
+                app:srcCompat="@drawable/gender"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginBottom="16dp"
@@ -154,29 +154,23 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
-                android:visibility="invisible"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                android:alpha="0.54" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gender"
-                    android:textSize="12sp" />
-
                 <com.jaredrummler.materialspinner.MaterialSpinner
                     android:id="@+id/spinner_gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
                     android:layout_marginEnd="16dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textAlignment="textStart"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:layout_marginBottom="16dp" />
 
             </LinearLayout>
 
@@ -184,8 +178,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/profile4"
                 app:srcCompat="@drawable/ic_social_city"
@@ -202,7 +195,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tilState"
-                app:errorEnabled="true">
+                app:errorEnabled="true"
+                app:hintEnabled="false">
 
                 <EditText
                     android:id="@+id/etState"
@@ -221,22 +215,29 @@
 
         </LinearLayout>
 
-        <com.dd.CircularProgressButton
-            android:id="@+id/btnSave"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:cpb_textComplete="Success"
-            app:cpb_textError="Error"
-            app:cpb_textIdle="Save"
-            android:layout_gravity="center_horizontal"
-            android:text="Save"
-            app:cpb_cornerRadius="48dp"
-            android:layout_marginBottom="16dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.dd.CircularProgressButton
+                android:id="@+id/btnSave"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:cpb_textComplete="Success"
+                app:cpb_textError="Error"
+                app:cpb_textIdle="Save"
+                android:layout_gravity="center_horizontal"
+                android:text="Save"
+                app:cpb_cornerRadius="48dp"
+                tools:ignore="HardcodedText"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="16dp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

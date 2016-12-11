@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -250,10 +251,6 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = new ProgressDialog(AddKidActivity.this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
                 final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
                 connectedRef.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -262,6 +259,8 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                         if (connected) {
                             if(!gotError()){
                                 save.setProgress(50);
+                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 if(newPhoto){
                                     newPhoto = false;
                                     uploadImage();
@@ -281,8 +280,7 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                                 }
                             }else{
                                 save.setProgress(-1);
-                                progressDialog.dismiss();
-
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             }
                         }
                         else{
@@ -459,7 +457,6 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                     newKid.setKid_id(ref.getKey());
                     ref.setValue(newKid);
                     message = "New kid is added";
-                    save.setProgress(100);
                     generateSchedule(newKid);
 
                     final String finalMessage = message;
@@ -469,7 +466,13 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
                             etState.setText("");
                             etName.setText("");
                             birthDate.setText("");
-                            progressDialog.dismiss();
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            save.setProgress(100);
+                            Glide.with(AddKidActivity.this).load(R.drawable.kid_boy)
+                                    .crossFade()
+                                    .thumbnail(0.5f)
+                                    .bitmapTransform(new CircleTransform(AddKidActivity.this))
+                                    .into(imageView);
                             Toast.makeText(AddKidActivity.this, finalMessage, Toast.LENGTH_SHORT).show();
                         }
                     });

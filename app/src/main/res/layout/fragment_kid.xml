@@ -6,6 +6,51 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layoutEmpty"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="56dp"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:layout_height="wrap_content"
+            android:id="@+id/imgEmpty"
+            android:src="@drawable/baby"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="No kids to show"
+            android:layout_gravity="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Display1"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:textStyle="normal|bold"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:paddingTop="26dp"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="Tap the '+' button below  to add a new kid."
+            android:layout_gravity="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Display1"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:textStyle="normal" />
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
@@ -17,52 +62,6 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:scrollbars="vertical" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/layoutEmpty"
-            android:orientation="vertical"
-            android:layout_centerInParent="false"
-            android:clipToPadding="false"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="10dp">
-
-            <ImageView
-                android:layout_height="wrap_content"
-                android:id="@+id/imgEmpty"
-                android:src="@drawable/baby"
-                android:layout_gravity="center"
-                android:padding="8dp"
-                android:layout_width="wrap_content" />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:text="No kids to show"
-                android:layout_gravity="center"
-                android:textAppearance="@android:style/TextAppearance.Material.Display1"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:textStyle="normal|bold"
-                android:paddingLeft="26dp"
-                android:paddingRight="26dp"
-                android:paddingTop="26dp"
-                android:paddingBottom="10dp" />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:text="Tap the '+' button below  to add a new kid."
-                android:layout_gravity="center"
-                android:textAppearance="@android:style/TextAppearance.Material.Display1"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:textStyle="normal" />
-
-        </LinearLayout>
 
     </RelativeLayout>
 
