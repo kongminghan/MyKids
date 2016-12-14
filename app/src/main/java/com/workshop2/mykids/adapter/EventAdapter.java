@@ -168,8 +168,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 new Thread(new Runnable() {
                     @Override
+
                     public void run() {
-                        int bgColor = getMatColor("600");
+                        int bgColor = R.color.dot_dark_screen1;
                         final TextDrawable drawable1 = TextDrawable.builder()
                                 .buildRound(event.getS_name().substring(0,1), bgColor); // radius in px
                         ((Activity)context).runOnUiThread(new Runnable() {
@@ -280,20 +281,20 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    private int getMatColor(String typeColor)
-    {
-        int returnColor = Color.BLACK;
-        int arrayId = context.getResources().getIdentifier("mdcolor_" + typeColor, "array", context.getPackageName());
-
-        if (arrayId != 0)
-        {
-            TypedArray colors = context.getResources().obtainTypedArray(arrayId);
-            int index = (int) (Math.random() * colors.length());
-            returnColor = colors.getColor(index, Color.BLACK);
-            colors.recycle();
-        }
-        return returnColor;
-    }
+//    private int getMatColor(String typeColor)
+//    {
+//        int returnColor = Color.BLACK;
+//        int arrayId = context.getResources().getIdentifier("mdcolor_" + typeColor, "array", context.getPackageName());
+//
+//        if (arrayId != 0)
+//        {
+//            TypedArray colors = context.getResources().obtainTypedArray(arrayId);
+//            int index = (int) (Math.random() * colors.length());
+//            returnColor = colors.getColor(index, Color.BLACK);
+//            colors.recycle();
+//        }
+//        return returnColor;
+//    }
 
     @Override
     public int getItemCount() {

@@ -38,7 +38,6 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:id="@+id/textView"
         tools:ignore="HardcodedText"
         app:layout_constraintTop_toBottomOf="@+id/imageView1"
         android:textAlignment="viewStart"

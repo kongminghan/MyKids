@@ -1,9 +1,12 @@
 package com.workshop2.mykids;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -16,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -171,46 +175,58 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-                connectedRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        boolean connected = snapshot.getValue(Boolean.class);
-                        if (connected) {
-                            progressDialog = new ProgressDialog(KidDetailActivity.this);
-                            progressDialog.setIndeterminate(true);
-                            progressDialog.setMessage("Loading...");
-                            progressDialog.show();
-                            if (!gotError()) {
-                                if (save.getProgress() == 0) {
-                                    save.setProgress(50);
-                                }else if(save.getProgress()==-1)
-                                    save.setProgress(50);
-                                if (newPhoto) {
-                                    newPhoto = false;
-                                    uploadImage();
-                                } else {
-                                    Kid kid = new Kid();
-                                    kid.setKid_name(etName.getText().toString());
-                                    kid.setKid_date(birthDate.getText().toString());
-                                    kid.setKid_gender(gender);
-                                    kid.setKid_state(state);
-                                    Map<String, Object> kidUpdate = kid.toMap();
-                                    updateKid(kidUpdate);
+                ConnectivityManager cm =
+                        (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+
+                if(isConnected){
+                    final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+                    connectedRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            boolean connected = snapshot.getValue(Boolean.class);
+                            if (connected) {
+//                            progressDialog = new ProgressDialog(KidDetailActivity.this);
+//                            progressDialog.setIndeterminate(true);
+//                            progressDialog.setMessage("Loading...");
+//                            progressDialog.show();
+                                if (!gotError()) {
+                                    if (save.getProgress() == 0) {
+                                        save.setProgress(50);
+                                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    }else if(save.getProgress()==-1)
+                                        save.setProgress(50);
+                                    if (newPhoto) {
+                                        newPhoto = false;
+                                        uploadImage();
+                                    } else {
+                                        Kid kid = new Kid();
+                                        kid.setKid_name(etName.getText().toString());
+                                        kid.setKid_date(birthDate.getText().toString());
+                                        kid.setKid_gender(gender);
+                                        kid.setKid_state(state);
+                                        Map<String, Object> kidUpdate = kid.toMap();
+                                        updateKid(kidUpdate);
+                                    }
+                                }else{
+                                    save.setProgress(-1);
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                             }else{
                                 save.setProgress(-1);
-                                progressDialog.dismiss();
+                                Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
                             }
-                        }else{
-                            save.setProgress(-1);
-                            Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {}
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                }else{
+                    Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -224,7 +240,7 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
     public void uploadImage(){
         //Initialize firebase storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://firebase-mykids.appspot.com/kid");
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://mykidsapp-e0c43.appspot.com/kid");
         StorageReference kidRef = storageRef.child(imageName);
 
         UploadTask uploadTask = kidRef.putBytes(data_img);
@@ -361,12 +377,16 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
                     mRef = FirebaseDatabase.getInstance().getReference();
                     DatabaseReference userRef = mRef.child("User").child(user.getUid()).child("kid");
                     userRef.child(kid).updateChildren(kidUpdate);
+                    save.setProgress(100);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     Toast.makeText(KidDetailActivity.this, "Saved", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     mRef = FirebaseDatabase.getInstance().getReference();
                     DatabaseReference userRef = mRef.child("User").child(user.getUid()).child("kid");
                     userRef.child(kid).onDisconnect().updateChildren(kidUpdate);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
 //                    Toast.makeText(KidDetailActivity.this, "Saved", Toast.LENGTH_SHORT).show();
 //
                     Snackbar.make(findViewById(R.id.coorLay), "Changes will be made when internet connection is available.", Snackbar.LENGTH_LONG).show();
@@ -388,7 +408,7 @@ public class KidDetailActivity extends AppCompatActivity implements DatePickerDi
 //        }
 //        else
 //            Log.d("FB", "failed to get current user");
-        progressDialog.dismiss();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override

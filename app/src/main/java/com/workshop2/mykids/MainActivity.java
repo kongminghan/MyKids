@@ -280,17 +280,16 @@ public class MainActivity extends AppCompatActivity implements KidFragment.OnKid
                     case R.id.nav_coming:
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_EVENT;
-//                        startActivity(new Intent(MainActivity.this, KidActivity.class));
                         break;
                     case R.id.nav_vaccine:
                         navItemIndex = 1;
                         CURRENT_TAG = TAG_VACCINE;
                         break;
-//                    case R.id.nav_about_us:
-//                        // launch new intent instead of loading fragment
-//                        startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
-//                        drawer.closeDrawers();
-//                        return true;
+                    case R.id.nav_about_us:
+                        // launch new intent instead of loading fragment
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                        drawer.closeDrawers();
+                        return true;
 //                    case R.id.nav_privacy_policy:
 //                        // launch new intent instead of loading fragment
 //                        startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));

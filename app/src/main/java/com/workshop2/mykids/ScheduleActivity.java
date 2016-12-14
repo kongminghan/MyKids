@@ -37,7 +37,6 @@ public class ScheduleActivity extends AppCompatActivity {
     private ScheduleAdapter scheduleAdapter;
     ActivityScheduleBinding binding;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

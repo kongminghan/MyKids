@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/activity_about"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:context="com.workshop2.mykids.AboutActivity">-->
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/banner_about" />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_margin="12dp"
+        android:padding="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_gravity="fill_vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MyKids application is developed by a group of students from UTeM under supervision of En. Suhaizan. This App is for Workshop 2 project purpose in which prepare students before undergoing FYP and IT."
+                android:textAlignment="center"
+                android:lineSpacingMultiplier="1.1"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supervised by"
+                android:textAppearance="@android:style/TextAppearance.Material.Menu"
+                android:textAlignment="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="12dp"
+                android:gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:src="@drawable/suhaizan" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="En Suhaizan"
+                    android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                    android:textSize="16sp"
+                    android:layout_margin="6dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Group members"
+                android:textAppearance="@android:style/TextAppearance.Material.Menu"
+                android:layout_gravity="left" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="12dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:src="@drawable/ming" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kong Ming Han"
+                    android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                    android:textSize="16sp"
+                    android:layout_margin="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="12dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:src="@drawable/sham" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shammugam"
+                    android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                    android:textSize="16sp"
+                    android:layout_margin="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="12dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:src="@drawable/yan" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aziani"
+                    android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                    android:textSize="16sp"
+                    android:layout_margin="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="12dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="67dp"
+                    android:layout_height="67dp"
+                    android:src="@drawable/popo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nurazri"
+                    android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                    android:textSize="16sp"
+                    android:layout_margin="6dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+<!--</android.support.v4.widget.NestedScrollView>-->

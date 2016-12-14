@@ -46,26 +46,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         prefManager = new PrefManager(this);
         mAuth = FirebaseAuth.getInstance();
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addApi(AppIndex.API).build();
-
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -88,6 +68,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         };
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(AppIndex.API).build();
+
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setScopes(gso.getScopeArray());
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
     }
 
     @Override

@@ -4,9 +4,12 @@ import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
@@ -251,48 +254,59 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-                connectedRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        boolean connected = snapshot.getValue(Boolean.class);
-                        if (connected) {
-                            if(!gotError()){
-                                save.setProgress(50);
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                if(newPhoto){
-                                    newPhoto = false;
-                                    uploadImage();
-                                }
-                                else{
-                                    Kid kid = new Kid();
-                                    kid.setKid_name(etName.getText().toString());
-                                    kid.setKid_date(birthDate.getText().toString());
-                                    kid.setKid_gender(gender);
-                                    kid.setKid_image(imagePath);
-                                    kid.setKid_state(state);
-                                    try {
-                                        addKid(kid);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
+                ConnectivityManager cm =
+                        (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+
+                if(isConnected){
+                    final DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+                    connectedRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            boolean connected = snapshot.getValue(Boolean.class);
+                            if (connected) {
+                                if(!gotError()){
+                                    save.setProgress(50);
+                                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    if(newPhoto){
+                                        newPhoto = false;
+                                        uploadImage();
                                     }
+                                    else{
+                                        Kid kid = new Kid();
+                                        kid.setKid_name(etName.getText().toString());
+                                        kid.setKid_date(birthDate.getText().toString());
+                                        kid.setKid_gender(gender);
+                                        kid.setKid_image(imagePath);
+                                        kid.setKid_state(state);
+                                        try {
+                                            addKid(kid);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }else{
+                                    save.setProgress(-1);
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
-                            }else{
-                                save.setProgress(-1);
-                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            }
+                            else{
+                                Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
                             }
                         }
-                        else{
-                            Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        System.err.println("Listener was cancelled at .info/connected");
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            System.err.println("Listener was cancelled at .info/connected");
+                        }
+                    });
+                }
+                else{
+                    Snackbar.make(findViewById(R.id.coorLay), "No internet connection", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -601,9 +615,9 @@ public class AddKidActivity extends AppCompatActivity implements DatePickerDialo
             public void run() {
                 if(!cal.before(Calendar.getInstance())){
                     cal.set(Calendar.SECOND, 0);
-                    cal.set(Calendar.MINUTE, 25);
-                    cal.set(Calendar.HOUR_OF_DAY, 18);
-//                    cal.add(Calendar.DAY_OF_MONTH, -2);
+                    cal.set(Calendar.MINUTE, 00);
+                    cal.set(Calendar.HOUR_OF_DAY, 8);
+                    cal.add(Calendar.DAY_OF_MONTH, -2);
 
                     AlarmManager alarms = (AlarmManager)getSystemService(ALARM_SERVICE);
                     Intent intent = new Intent(AddKidActivity.this, Receiver.class);

@@ -6,16 +6,11 @@
     <color name="white">#ffffff</color>
     <color name="blue">#2196f3</color>
     <color name="darkBlue">#1976D2</color>
-    <color name="silver">#607d8b</color>
-    <color name="green">#009933</color>
-    <color name="light_blue">#00BCD4</color>
-    <color name="grey">#FAFAFA</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#ec407a</color>
     <color name="bg_screen2">#20d2bb</color>
     <color name="bg_screen3">#3395ff</color>
-    <color name="bg_screen4">#c873f4</color>
 
     <!-- dots inactive colors -->
     <color name="dot_dark_screen1">#d1395c</color>
@@ -49,16 +44,9 @@
     <color name="colorPrimaryDarkKid">#0097a7</color>
     <color name="colorAccentKid">#03A9F4</color>
     <color name="schedule">#009688</color>
-    <color name="schedule_card">#00796b</color>
     <color name="schedule_checked">#2196F3</color>
-    <color name="schedule_checked_dark">#1E88E5</color>
     <color name="toolbar">#9E9E9E</color>
-    <color name="schedule_text">#78909c</color>
-    <color name="teal200">#009688</color>
     <color name="schedule_title">#E0E0E0</color>
-    <color name="light_green">#00C853</color>
-    <color name="iris_blue">#08BDD5</color>
-    <color name="azure">#F7F8F8 </color>
     <color name="vaccine">#67abc1</color>
     <color name="vaccineDark">#0097A7</color>
 

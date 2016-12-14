@@ -1,14 +1,10 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="dots_height">30dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>
-    <dimen name="img_width_height">120dp</dimen>
     <dimen name="slide_title">30dp</dimen>
-    <dimen name="slide_desc">16dp</dimen>
-    <dimen name="desc_padding">40dp</dimen>
 
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
@@ -16,13 +12,6 @@
     <dimen name="profile_width">75dp</dimen>
     <dimen name="profile_height">75dp</dimen>
 
-    <dimen name="cardMarginHorizontal">10dp</dimen>
-    <dimen name="cardMarginVertical">8dp</dimen>
-
-    <dimen name="item_offset">10dp</dimen>
-    <dimen name="detail_backdrop_height">250dp</dimen>
-    <dimen name="backdrop_title">30dp</dimen>
-    <dimen name="backdrop_subtitle">18dp</dimen>
     <dimen name="card_margin">5dp</dimen>
     <dimen name="card_album_radius">0dp</dimen>
     <dimen name="album_cover_height">160dp</dimen>
@@ -33,20 +22,13 @@
     <dimen name="ic_album_overflow_width">20dp</dimen>
     <dimen name="ic_album_overflow_height">30dp</dimen>
     <dimen name="ic_album_overflow_margin_top">10dp</dimen>
-    <dimen name="reveal_margin">130dp</dimen>
     <dimen name="dimen_200">200dp</dimen>
-
-    <dimen name="statusbar_size">24dp</dimen>
 
     <dimen name="cardview_toolbar_spacer">16dp</dimen>
 
-    <dimen name="toolbar_four_height">280dp</dimen>
     <dimen name="toolbar_triple_height">224dp</dimen>
-    <dimen name="toolbar_tripleH_height">260dp</dimen>
     <dimen name="toolbar_double_height">168dp</dimen>
     <dimen name="toolbar_doubleH_height">214dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
-    <dimen name="activity_margin_half">8dp</dimen>
 
     <dimen name="toolbarElevation">8dp</dimen>
 

@@ -3,12 +3,10 @@
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <!--Login-->
     <string name="sign_in_with_your_google_account">Sign in with your Google account</string>
     <string name="nav_about_us">About Us</string>
-    <string name="privacy_policy">Privacy Policy</string>
 
     <string-array name="nav_item_activity_titles">
         <item>Home</item>
@@ -21,14 +19,10 @@
     <string name="closeDrawer">close_drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
-    <string name="save">Save</string>
     <string name="date">Date</string>
-    <string name="gender">Gender</string>
     <string name="tap_to_change">Tap to change</string>
-    <string name="state">State</string>
     <string name="name">Name</string>
 
     <string-array name="state">
@@ -46,34 +40,5 @@
         <item>Sabah</item>
         <item>Sarawak</item>
     </string-array>
-
-    <string-array name="alarm">
-        <item>"2 minutes before</item>
-        <item>30 minutes before</item>
-        <item>1 day before</item>
-        <item>2 days before</item>
-        <item>None</item>
-    </string-array>
-
-    <array name="mdcolor_600">
-        <item name="red_600" type="color">#dd191d</item>
-        <item name="pink_600" type="color">#d81b60</item>
-        <item name="purple_600" type="color">#8e24aa</item>
-        <item name="deep_purple_600" type="color">#5e35b1</item>
-        <item name="indigo_600" type="color">#3949ab</item>
-        <item name="blue_600" type="color">#4e6cef</item>
-        <item name="light_blue_600" type="color">#039be5</item>
-        <item name="cyan_600" type="color">#00acc1</item>
-        <item name="teal_600" type="color">#00897b</item>
-        <item name="green_600" type="color">#0a8f08</item>
-        <item name="light_green_600" type="color">#7cb342</item>
-        <item name="lime_600" type="color">#c0ca33</item>
-        <item name="yellow_600" type="color">#fdd835</item>
-        <item name="orange_600" type="color">#fb8c00</item>
-        <item name="deep_orange_600" type="color">#f4511e</item>
-        <item name="brown_600" type="color">#6d4c41</item>
-        <item name="grey_600" type="color">#757575</item>
-        <item name="blue_grey_600" type="color">#546e7a</item>
-    </array>
 
 </resources>

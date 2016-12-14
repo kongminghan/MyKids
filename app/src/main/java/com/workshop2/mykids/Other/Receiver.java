@@ -43,7 +43,8 @@ public class Receiver extends BroadcastReceiver {
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                 .setSound(notification)
                                 .setContentTitle("Vaccine reminder")
-                                .setContentText("It's time to get your kid for "+intent.getStringExtra("title"));
+                                .setContentText("It's time to get your kid for "+intent.getStringExtra("title"))
+                                .setAutoCancel(true);
 
 // Creates an explicit intent for an Activity in your app
                 Intent resultIntent = new Intent(context, MainActivity.class);
